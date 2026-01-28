@@ -1,0 +1,10 @@
+model Category {
+  id            String    @id @default(uuid())
+  name          String    @unique @db.VarChar(100)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  medicines Medicine[]
+
+  @@map("categories")
+}
