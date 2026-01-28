@@ -20,7 +20,7 @@ export const auth = betterAuth({
       },
       status: {
         type: "string",
-        defaultValue: "UNBAN",
+        defaultValue: "ACTIVE",
         required: false,
       },
       phone: {
@@ -36,5 +36,15 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
+  },
+
+  socialProviders: {
+    google: {
+      prompt: "select_account consent",
+      accessType: "offline",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
   },
 });

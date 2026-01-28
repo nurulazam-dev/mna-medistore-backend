@@ -4,9 +4,9 @@ model User {
   email         String   
   emailVerified Boolean   @default(false)
   image         String?
-  role           String? @default("CUSTOMER")
+  role          String?   @default("CUSTOMER")
   phone         String?   
-  status        String? @default("ACTIVE")
+  status        String?   @default("ACTIVE")
   address       String?   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -20,6 +20,7 @@ model User {
   accounts      Account[]
 
   @@unique([email])
+  
   @@map("user")
 }
 
