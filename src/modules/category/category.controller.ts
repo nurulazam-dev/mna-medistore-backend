@@ -53,7 +53,30 @@ const getAllCategory = async (req: Request, res: Response) => {
   }
 };
 
+const getCategoryById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      throw new Error("CategoryId is required!");
+    }
+    const result = await categoryService.getCategoryById(id as string);
+
+    return res.status(201).json({
+      success: true,
+      message: "Get Category successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
 export const CategoryController = {
   createCategory,
   getAllCategory,
+  getCategoryById,
 };
