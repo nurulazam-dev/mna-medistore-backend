@@ -1,0 +1,13 @@
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          String?  @default("CUSTOMER")
+  phone         String?
+  status        String?    @default("UNBAN")
+  address       String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+} 
