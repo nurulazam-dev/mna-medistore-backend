@@ -18,7 +18,6 @@ async function seededAdmin() {
         email: adminData.email,
       },
     });
-    console.log(existingUser);
 
     if (existingUser) {
       throw new Error("User already exist!");
