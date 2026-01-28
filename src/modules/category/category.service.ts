@@ -37,7 +37,7 @@ const updateCategory = async (
   });
 
   if (!isAdmin) {
-    throw new Error("You have no access to update!");
+    throw new Error("You have no access!");
   }
 
   const result = await prisma.category.update({
@@ -49,9 +49,31 @@ const updateCategory = async (
   return result;
 };
 
+const deleteCategory = async (id: string, isAdmin: boolean) => {
+  const category = await prisma.category.findUniqueOrThrow({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!isAdmin) {
+    throw new Error("You have no access!");
+  }
+
+  return await prisma.category.delete({
+    where: {
+      id: category.id,
+    },
+  });
+};
+
 export const categoryService = {
   createCategory,
   getAllCategory,
   getCategoryById,
   updateCategory,
+  deleteCategory,
 };

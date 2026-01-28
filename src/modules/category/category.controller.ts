@@ -107,9 +107,37 @@ const updateCategory = async (req: Request, res: Response) => {
   }
 };
 
+const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      throw new Error("You are unauthorize!");
+    }
+
+    const { id } = req.params;
+    const isAdmin = user.role === UserRole.ADMIN;
+
+    const result = await categoryService.deleteCategory(id as string, isAdmin);
+
+    return res.status(201).json({
+      success: true,
+      message: "Category deleted successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
 export const CategoryController = {
   createCategory,
   getAllCategory,
   getCategoryById,
   updateCategory,
+  deleteCategory,
 };
