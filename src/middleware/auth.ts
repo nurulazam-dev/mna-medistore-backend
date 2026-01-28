@@ -39,12 +39,12 @@ const auth = (...roles: UserRole[]) => {
         });
       }
 
-      if (!session.user.emailVerified) {
+      /*  if (!session.user.emailVerified) {
         return res.status(403).json({
           success: false,
           message: "Your email isn't verified!",
         });
-      }
+      } */
 
       req.user = {
         id: session.user.id,

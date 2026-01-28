@@ -8,9 +8,9 @@ async function seededAdmin() {
       email: "admin@medistore.com",
       password: "Admin123",
       role: UserRole.ADMIN,
-      //   phone: "+8801721233215",
-      //   status: "UNBAN",
-      //   address: "Dhaka",
+      phone: "+8801721233215",
+      status: "UNBAN",
+      address: "Dhaka",
     };
 
     const existingUser = await prisma.user.findUnique({
