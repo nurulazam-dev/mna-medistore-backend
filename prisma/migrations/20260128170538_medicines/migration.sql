@@ -1,9 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "UserRoles" AS ENUM ('CUSTOMER', 'SELLER', 'ADMIN');
 
@@ -15,9 +9,6 @@ CREATE TYPE "OrderStatus" AS ENUM ('PLACED', 'PROCESSING', 'SHIPPED', 'DELIVERED
 
 -- CreateEnum
 CREATE TYPE "PaymentMethod" AS ENUM ('CASH_ON_DELIVERY');
-
--- DropTable
-DROP TABLE "User";
 
 -- CreateTable
 CREATE TABLE "users" (

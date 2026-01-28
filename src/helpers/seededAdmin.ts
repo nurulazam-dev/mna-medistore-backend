@@ -9,7 +9,7 @@ async function seededAdmin() {
       password: "Admin123",
       role: UserRole.ADMIN,
       phone: "+8801721233215",
-      status: "UNBAN",
+      status: "ACTIVE",
       address: "Dhaka",
     };
 
