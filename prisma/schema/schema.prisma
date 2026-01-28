@@ -25,6 +25,7 @@ model User {
   orders        Order[]
   reviews       Review[]
   orderItems    OrderItem[]
+
   @@map("users")
 }
 
@@ -45,46 +46,48 @@ model Category {
   updatedAt     DateTime  @updatedAt
 
   medicines Medicine[]
+
   @@map("categories")
 }
 
 model Medicine {
   id            String    @id @default(uuid())
   name          String    @unique @db.VarChar(150)
-  sellerId     String
-  seller       User @relation(fields: [sellerId],references: [id], onDelete: Cascade)
-  categoryId     String
-  category       Category @relation(fields: [categoryId],references: [id], onDelete: Cascade)
-  description   String     @db.Text
+  sellerId      String
+  seller        User      @relation(fields: [sellerId],references: [id], onDelete: Cascade)
+  categoryId    String
+  category      Category  @relation(fields: [categoryId],references: [id], onDelete: Cascade)
+  description   String    @db.Text
   image         String?
-  price         Decimal     @db.Decimal(10,2)
+  price         Decimal   @db.Decimal(10,2)
   stock         Int?
-  manufacturer  String  @db.VarChar(150)
-  isActive      Boolean?    @default(true)
+  manufacturer  String    @db.VarChar(150)
+  isActive      Boolean?  @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-orderItems   OrderItem[] 
-  reviews      Review[]
+  orderItems    OrderItem[] 
+  reviews       Review[]
 
   @@index([sellerId])
   @@index([categoryId])
+
   @@map("medicines")
 }
 
 model Order {
-  id            String    @id @default(uuid())
-  customerId     String
-  customer       User @relation(fields: [customerId],references: [id], onDelete: Cascade)
-  status   OrderStatus     @default(PLACED)
-  payment_method         PaymentMethod @default(CASH_ON_DELIVERY)
-  shipping_address String @db.Text
-  total_amount         Decimal @db.Decimal(10,2)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String        @id @default(uuid())
+  customerId       String
+  customer         User          @relation(fields: [customerId],references: [id], onDelete: Cascade)
+  status           OrderStatus   @default(PLACED)
+  payment_method   PaymentMethod @default(CASH_ON_DELIVERY)
+  shipping_address String        @db.Text
+  total_amount     Decimal       @db.Decimal(10,2)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
   items            OrderItem[]
-  
+
   @@index([customerId])
   @@map("orders")
 }
@@ -103,16 +106,16 @@ CASH_ON_DELIVERY
 
 
 model OrderItem {
-  id            String    @id @default(uuid())
+  id          String    @id @default(uuid())
   orderId     String
   order       Order @relation(fields: [orderId],references: [id], onDelete: Cascade)
-  medicineId     String
-  medicine       Medicine @relation(fields: [medicineId],references: [id], onDelete: Cascade)
-  sellerId     String
-  seller       User @relation(fields: [sellerId],references: [id], onDelete: Cascade)
-  quantity Int 
-  unit_price         Decimal @db.Decimal(10,2)
-  sub_total         Decimal @db.Decimal(10,2)
+  medicineId  String
+  medicine    Medicine @relation(fields: [medicineId],references: [id], onDelete: Cascade)
+  sellerId    String
+  seller      User @relation(fields: [sellerId],references: [id], onDelete: Cascade)
+  quantity    Int 
+  unit_price  Decimal @db.Decimal(10,2)
+  sub_total   Decimal @db.Decimal(10,2)
 
   
   @@index([orderId])
@@ -123,14 +126,14 @@ model OrderItem {
 
 
 model Review {
-  id            String    @id @default(uuid())
+  id             String    @id @default(uuid())
   medicineId     String
   medicine       Medicine @relation(fields: [medicineId],references: [id], onDelete: Cascade)
   customerId     String
   customer       User @relation(fields: [customerId],references: [id], onDelete: Cascade)
-  rating Int 
-  comment String @db.Text
-  createdAt     DateTime  @default(now())
+  rating         Int 
+  comment        String @db.Text
+  createdAt      DateTime  @default(now())
 
   
   @@index([medicineId])
