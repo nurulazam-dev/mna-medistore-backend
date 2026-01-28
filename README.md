@@ -1,6 +1,8 @@
-# MNA-MediStore Backend
+# [MNA-MediStore Backend](mna-medistore-backend)
 
-## [MNA-MediStore Frontend](https://github.com/nurulazam-dev/mna-medistore-frontend)
+## MNA-MediStore Frontend - [Repo Link:](https://github.com/nurulazam-dev/mna-medistore-frontend)
+
+# Project overview & features:
 
 > Run the project:
 
