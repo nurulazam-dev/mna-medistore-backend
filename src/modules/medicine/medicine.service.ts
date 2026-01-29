@@ -143,32 +143,38 @@ const getMedicineById = async (id: string) => {
   return result;
 };
 
-/* const updateMedicine = async (
+const updateMedicine = async (
   id: string,
-  data: Partial<Category>,
-  isAdmin: boolean,
+  data: Partial<Medicine>,
+  sellerId: string,
+  isSeller: boolean,
 ) => {
-  const category = await prisma.category.findUniqueOrThrow({
+  const medicineData = await prisma.medicine.findUniqueOrThrow({
     where: {
       id,
     },
     select: {
       id: true,
+      sellerId: true,
     },
   });
 
-  if (!isAdmin) {
-    throw new Error("You have no access!");
+  if (!isSeller) {
+    throw new Error("You have no access to updated!");
   }
 
-  const result = await prisma.category.update({
+  if (medicineData.sellerId !== sellerId) {
+    throw new Error("You aren't seller of this medicine!");
+  }
+
+  const result = await prisma.medicine.update({
     where: {
-      id: category.id,
+      id: medicineData.id,
     },
     data,
   });
   return result;
-}; */
+};
 
 /* const deleteMedicine = async (id: string, isAdmin: boolean) => {
   const category = await prisma.category.findUniqueOrThrow({
@@ -195,6 +201,6 @@ export const medicineService = {
   createMedicine,
   getAllMedicine,
   getMedicineById,
-  //   updateMedicine,
+  updateMedicine,
   //   deleteMedicine,
 };

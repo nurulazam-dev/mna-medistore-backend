@@ -130,7 +130,7 @@ const getMedicineById = async (req: Request, res: Response) => {
   }
 };
 
-/* const updateMedicine = async (req: Request, res: Response) => {
+const updateMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -139,12 +139,13 @@ const getMedicineById = async (req: Request, res: Response) => {
     }
 
     const { id } = req.params;
-    const isAdmin = user.role === UserRole.ADMIN;
+    const isSeller = user.role === UserRole.SELLER;
 
     const result = await medicineService.updateMedicine(
       id as string,
       req.body,
-      isAdmin,
+      user.id,
+      isSeller,
     );
 
     return res.status(201).json({
@@ -159,7 +160,7 @@ const getMedicineById = async (req: Request, res: Response) => {
       message: err.message || "Internal Server Error",
     });
   }
-}; */
+};
 
 /* const deleteMedicine = async (req: Request, res: Response) => {
   try {
@@ -192,6 +193,6 @@ export const MedicineController = {
   createMedicine,
   getAllMedicine,
   getMedicineById,
-  //   updateMedicine,
+  updateMedicine,
   //   deleteMedicine,
 };
