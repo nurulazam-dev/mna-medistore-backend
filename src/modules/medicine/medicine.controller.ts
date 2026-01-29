@@ -73,6 +73,8 @@ const getAllMedicine = async (req: Request, res: Response) => {
 
     const stock = Number(req.query.stock) as number | undefined;
 
+    const manufacturer = req.query.manufacturer as string | undefined;
+
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
       req.query,
     );
@@ -84,6 +86,7 @@ const getAllMedicine = async (req: Request, res: Response) => {
       categoryId,
       price,
       stock,
+      manufacturer,
       page,
       limit,
       skip,

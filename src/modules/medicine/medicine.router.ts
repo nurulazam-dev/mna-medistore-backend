@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", MedicineController.getAllMedicine);
 router.get("/:id", MedicineController.getMedicineById);
-// router.patch("/:id", auth(UserRole.ADMIN), MedicineController.updateMedicine);
+router.patch("/:id", auth(UserRole.SELLER), MedicineController.updateMedicine);
 // router.delete("/:id", auth(UserRole.ADMIN), MedicineController.deleteMedicine);
 router.post("/", auth(UserRole.SELLER), MedicineController.createMedicine);
 

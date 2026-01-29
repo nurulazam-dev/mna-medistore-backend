@@ -16,6 +16,7 @@ const getAllMedicine = async ({
   categoryId,
   price,
   stock,
+  manufacturer,
   page,
   limit,
   skip,
@@ -28,6 +29,7 @@ const getAllMedicine = async ({
   categoryId: string | undefined;
   price: number | undefined;
   stock: number | undefined;
+  manufacturer: string | undefined;
   page: number;
   limit: number;
   skip: number;
@@ -80,6 +82,12 @@ const getAllMedicine = async ({
   if (stock) {
     conditions.push({
       stock,
+    });
+  }
+
+  if (manufacturer) {
+    conditions.push({
+      manufacturer,
     });
   }
 
