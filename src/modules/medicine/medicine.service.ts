@@ -110,31 +110,30 @@ const getAllMedicine = async ({
   };
 };
 
-/* const getMedicineById = async (id: string) => {
-  const result = await prisma.category.findUniqueOrThrow({
+const getMedicineById = async (id: string) => {
+  const result = await prisma.medicine.findUniqueOrThrow({
     where: {
       id,
     },
     include: {
-      medicines: {
+      seller: {
         select: {
           id: true,
           name: true,
-          price: true,
-          stock: true,
-          isActive: true,
-          seller: {
-            select: {
-              name: true,
-              email: true,
-            },
-          },
+          email: true,
+          phone: true,
+        },
+      },
+      category: {
+        select: {
+          id: true,
+          name: true,
         },
       },
     },
   });
   return result;
-}; */
+};
 
 /* const updateMedicine = async (
   id: string,
@@ -187,7 +186,7 @@ const getAllMedicine = async ({
 export const medicineService = {
   createMedicine,
   getAllMedicine,
-  //   getMedicineById,
+  getMedicineById,
   //   updateMedicine,
   //   deleteMedicine,
 };

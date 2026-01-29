@@ -105,17 +105,17 @@ const getAllMedicine = async (req: Request, res: Response) => {
   }
 };
 
-/* const getMedicineById = async (req: Request, res: Response) => {
+const getMedicineById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) {
-      throw new Error("CategoryId is required!");
+      throw new Error("Medicine Id is required!");
     }
     const result = await medicineService.getMedicineById(id as string);
 
     return res.status(201).json({
       success: true,
-      message: "Get Category successfully!",
+      message: "Get Medicine successfully!",
       data: result,
     });
   } catch (err: any) {
@@ -125,7 +125,7 @@ const getAllMedicine = async (req: Request, res: Response) => {
       message: err.message || "Internal Server Error",
     });
   }
-}; */
+};
 
 /* const updateMedicine = async (req: Request, res: Response) => {
   try {
@@ -188,7 +188,7 @@ const getAllMedicine = async (req: Request, res: Response) => {
 export const MedicineController = {
   createMedicine,
   getAllMedicine,
-  //   getMedicineById,
+  getMedicineById,
   //   updateMedicine,
   //   deleteMedicine,
 };
