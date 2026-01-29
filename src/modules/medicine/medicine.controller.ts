@@ -13,10 +13,24 @@ const createMedicine = async (req: Request, res: Response) => {
       });
     }
 
-    if (user.role !== "ADMIN") {
+    if (user.status !== "ACTIVE") {
       return res.status(403).json({
         success: false,
-        message: "Only Admin can create Medicine.",
+        message: "Your account isn't active!",
+      });
+    }
+
+    if (user.role !== "SELLER") {
+      return res.status(403).json({
+        success: false,
+        message: "You don't have access to create Medicine!",
+      });
+    }
+
+    if (!user.emailVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "You aren't verified Seller!",
       });
     }
 
@@ -24,7 +38,7 @@ const createMedicine = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       success: true,
-      message: "Category created successfully!",
+      message: "Medicine created successfully!",
       data: result,
     });
   } catch (err: any) {
