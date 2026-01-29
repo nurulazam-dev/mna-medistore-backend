@@ -12,6 +12,14 @@ const getAllUser = async (req: Request, res: Response) => {
         message: "Forbidden! Only admin can access users!",
       });
     }
+
+    if (user.status !== "ACTIVE") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account isn't active!",
+      });
+    }
+
     const result = await userService.getAllUser();
 
     return res.status(201).json({
@@ -39,6 +47,13 @@ const updateUserStatus = async (req: Request, res: Response) => {
       });
     }
 
+    if (user.status !== "ACTIVE") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account isn't active!",
+      });
+    }
+
     const { id } = req.params;
 
     const result = await userService.updateUserStatus(id as string, req.body);
@@ -56,6 +71,40 @@ const updateUserStatus = async (req: Request, res: Response) => {
     });
   }
 };
+
+/* const updateUser = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "You are unauthorize!",
+      });
+    }
+
+    if (user.status !== "ACTIVE") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account isn't active!",
+      });
+    }
+
+    const result = await userService.updateUser(user?.id as string, req.body);
+
+    return res.status(201).json({
+      success: true,
+      message: "User updated successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Internal Server Error",
+    });
+  }
+}; */
 
 export const UserController = {
   getAllUser,
