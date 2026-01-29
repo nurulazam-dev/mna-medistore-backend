@@ -1,4 +1,5 @@
 import { Medicine } from "../../../generated/prisma/client";
+import { MedicineWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 
 const createMedicine = async (data: Medicine) => {
@@ -8,15 +9,101 @@ const createMedicine = async (data: Medicine) => {
   return result;
 };
 
-const getAllMedicine = async () => {
-  const result = await prisma.category.findMany({
-    include: {
-      _count: {
-        select: { medicines: true },
-      },
+const getAllMedicine = async ({
+  search,
+  isActive,
+  sellerId,
+  categoryId,
+  price,
+  stock,
+  page,
+  limit,
+  skip,
+  sortBy,
+  sortOrder,
+}: {
+  search: string | undefined;
+  isActive: boolean | undefined;
+  sellerId: string | undefined;
+  categoryId: string | undefined;
+  price: number | undefined;
+  stock: number | undefined;
+  page: number;
+  limit: number;
+  skip: number;
+  sortBy: string;
+  sortOrder: string;
+}) => {
+  const conditions: MedicineWhereInput[] = [];
+  if (search) {
+    conditions.push({
+      OR: [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+          manufacturer: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  if (isActive) {
+    conditions.push({
+      isActive,
+    });
+  }
+
+  if (sellerId) {
+    conditions.push({
+      sellerId,
+    });
+  }
+  if (categoryId) {
+    conditions.push({
+      categoryId,
+    });
+  }
+  if (price) {
+    conditions.push({
+      price,
+    });
+  }
+  if (stock) {
+    conditions.push({
+      stock,
+    });
+  }
+
+  const allMedicine = await prisma.medicine.findMany({
+    take: limit,
+    skip,
+    where: {
+      AND: conditions,
+    },
+    orderBy: {
+      [sortBy]: sortOrder,
     },
   });
-  return result;
+
+  const total = await prisma.medicine.count({
+    where: {
+      AND: conditions,
+    },
+  });
+  return {
+    data: allMedicine,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 /* const getMedicineById = async (id: string) => {
