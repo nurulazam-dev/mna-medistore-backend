@@ -147,7 +147,6 @@ const updateMedicine = async (
   id: string,
   data: Partial<Medicine>,
   sellerId: string,
-  isSeller: boolean,
 ) => {
   const medicineData = await prisma.medicine.findUniqueOrThrow({
     where: {
@@ -158,10 +157,6 @@ const updateMedicine = async (
       sellerId: true,
     },
   });
-
-  if (!isSeller) {
-    throw new Error("You have no access to updated!");
-  }
 
   if (medicineData.sellerId !== sellerId) {
     throw new Error("You aren't seller of this medicine!");
@@ -176,31 +171,32 @@ const updateMedicine = async (
   return result;
 };
 
-/* const deleteMedicine = async (id: string, isAdmin: boolean) => {
-  const category = await prisma.category.findUniqueOrThrow({
+const deleteMedicine = async (id: string, sellerId: string) => {
+  const medicineData = await prisma.medicine.findUniqueOrThrow({
     where: {
       id,
     },
     select: {
       id: true,
+      sellerId: true,
     },
   });
 
-  if (!isAdmin) {
-    throw new Error("You have no access!");
+  if (medicineData.sellerId !== sellerId) {
+    throw new Error("You aren't seller of this medicine!");
   }
 
-  return await prisma.category.delete({
+  return await prisma.medicine.delete({
     where: {
-      id: category.id,
+      id: medicineData.id,
     },
   });
-}; */
+};
 
 export const medicineService = {
   createMedicine,
   getAllMedicine,
   getMedicineById,
   updateMedicine,
-  //   deleteMedicine,
+  deleteMedicine,
 };

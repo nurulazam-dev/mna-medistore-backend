@@ -141,16 +141,19 @@ const updateMedicine = async (req: Request, res: Response) => {
     const { id } = req.params;
     const isSeller = user.role === UserRole.SELLER;
 
+    if (!isSeller) {
+      throw new Error("You have no access to updated!");
+    }
+
     const result = await medicineService.updateMedicine(
       id as string,
       req.body,
       user.id,
-      isSeller,
     );
 
     return res.status(201).json({
       success: true,
-      message: "Category updated successfully!",
+      message: "Medicine updated successfully!",
       data: result,
     });
   } catch (err: any) {
@@ -162,7 +165,7 @@ const updateMedicine = async (req: Request, res: Response) => {
   }
 };
 
-/* const deleteMedicine = async (req: Request, res: Response) => {
+const deleteMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -171,13 +174,17 @@ const updateMedicine = async (req: Request, res: Response) => {
     }
 
     const { id } = req.params;
-    const isAdmin = user.role === UserRole.ADMIN;
+    const isSeller = user.role === UserRole.SELLER;
 
-    const result = await medicineService.deleteMedicine(id as string, isAdmin);
+    if (!isSeller) {
+      throw new Error("You have no access to deleted!");
+    }
+
+    const result = await medicineService.deleteMedicine(id as string, user.id);
 
     return res.status(201).json({
       success: true,
-      message: "Category deleted successfully!",
+      message: "Medicine deleted successfully!",
       data: result,
     });
   } catch (err: any) {
@@ -187,12 +194,12 @@ const updateMedicine = async (req: Request, res: Response) => {
       message: err.message || "Internal Server Error",
     });
   }
-}; */
+};
 
 export const MedicineController = {
   createMedicine,
   getAllMedicine,
   getMedicineById,
   updateMedicine,
-  //   deleteMedicine,
+  deleteMedicine,
 };
