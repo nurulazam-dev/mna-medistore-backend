@@ -1,5 +1,9 @@
 import express, { Application } from "express";
 import cors from "cors";
+import { auth } from "./lib/auth";
+import { toNodeHandler } from "better-auth/node";
+import { notFound } from "./middleware/notFound";
+import { categoryRouter } from "./modules/category/category.router";
 
 const app: Application = express();
 
@@ -12,8 +16,14 @@ app.use(
 
 app.use(express.json());
 
+app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.use("/category", categoryRouter);
+
 app.get("/", (req, res) => {
   res.send("Running the MNA_MediStore_Server");
 });
+
+app.use(notFound);
 
 export default app;

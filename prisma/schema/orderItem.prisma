@@ -1,0 +1,18 @@
+model OrderItem {
+  id          String    @id @default(uuid())
+  orderId     String
+  order       Order @relation(fields: [orderId],references: [id], onDelete: Cascade)
+  medicineId  String
+  medicine    Medicine @relation(fields: [medicineId],references: [id], onDelete: Cascade)
+  sellerId    String
+  seller      User @relation(fields: [sellerId],references: [id], onDelete: Cascade)
+  quantity    Int 
+  unit_price  Decimal @db.Decimal(10,2)
+  sub_total   Decimal @db.Decimal(10,2)
+
+  
+  @@index([orderId])
+  @@index([sellerId])
+  @@index([medicineId])
+  @@map("orderItems")
+}

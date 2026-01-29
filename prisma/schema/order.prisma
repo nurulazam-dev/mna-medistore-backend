@@ -1,0 +1,29 @@
+
+model Order {
+  id               String        @id @default(uuid())
+  customerId       String
+  customer         User          @relation(fields: [customerId],references: [id], onDelete: Cascade)
+  status           OrderStatus   @default(PLACED)
+  payment_method   PaymentMethod @default(CASH_ON_DELIVERY)
+  shipping_address String        @db.Text
+  total_amount     Decimal       @db.Decimal(10,2)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  items            OrderItem[]
+
+  @@index([customerId])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+CASH_ON_DELIVERY
+}
