@@ -13,7 +13,7 @@ const createCategory = async (req: Request, res: Response) => {
       });
     }
 
-    if (user.role !== "ADMIN") {
+    if (user.role !== UserRole.ADMIN) {
       return res.status(403).json({
         success: false,
         message: "Only Admin can create categories.",

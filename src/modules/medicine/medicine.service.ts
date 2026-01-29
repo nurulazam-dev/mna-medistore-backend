@@ -35,6 +35,7 @@ const getAllMedicine = async ({
   sortOrder: string;
 }) => {
   const conditions: MedicineWhereInput[] = [];
+
   if (search) {
     conditions.push({
       OR: [
@@ -43,6 +44,8 @@ const getAllMedicine = async ({
             contains: search,
             mode: "insensitive",
           },
+        },
+        {
           manufacturer: {
             contains: search,
             mode: "insensitive",
@@ -73,6 +76,7 @@ const getAllMedicine = async ({
       price,
     });
   }
+
   if (stock) {
     conditions.push({
       stock,

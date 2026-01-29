@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { medicineService } from "./medicine.service";
+import paginationHelper from "../../helpers/paginationHelper";
 
 const createMedicine = async (req: Request, res: Response) => {
   try {
@@ -20,7 +21,7 @@ const createMedicine = async (req: Request, res: Response) => {
       });
     }
 
-    if (user.role !== "SELLER") {
+    if (user.role !== UserRole.SELLER) {
       return res.status(403).json({
         success: false,
         message: "You don't have access to create Medicine!",
@@ -52,7 +53,43 @@ const createMedicine = async (req: Request, res: Response) => {
 
 const getAllMedicine = async (req: Request, res: Response) => {
   try {
-    const result = await medicineService.getAllMedicine();
+    const { search } = req.query;
+
+    const searchContent = typeof search === "string" ? search : undefined;
+
+    const isActive = req.query.isActive
+      ? req.query.isActive === "true"
+        ? true
+        : req.query.isActive === "false"
+          ? false
+          : undefined
+      : undefined;
+
+    const sellerId = req.query.sellerId as string | undefined;
+
+    const categoryId = req.query.categoryId as string | undefined;
+
+    const price = req.query.price as number | undefined;
+
+    const stock = Number(req.query.stock) as number | undefined;
+
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
+      req.query,
+    );
+
+    const result = await medicineService.getAllMedicine({
+      search: searchContent,
+      isActive,
+      sellerId,
+      categoryId,
+      price,
+      stock,
+      page,
+      limit,
+      skip,
+      sortBy,
+      sortOrder,
+    });
 
     return res.status(201).json({
       success: true,
