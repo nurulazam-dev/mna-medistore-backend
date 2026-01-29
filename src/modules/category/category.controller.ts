@@ -6,17 +6,10 @@ const createCategory = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "You are Unauthorized!",
-      });
-    }
-
-    if (user.role !== "ADMIN") {
+    if (!user || user.role !== UserRole.ADMIN) {
       return res.status(403).json({
         success: false,
-        message: "Only Admin can create categories.",
+        message: "Forbidden! Only admin can  created category!",
       });
     }
 
@@ -57,6 +50,7 @@ const getAllCategory = async (req: Request, res: Response) => {
 const getCategoryById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
     if (!id) {
       throw new Error("CategoryId is required!");
     }
@@ -80,18 +74,16 @@ const updateCategory = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user) {
-      throw new Error("You are unauthorize!");
+    if (!user || user.role !== UserRole.ADMIN) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only admin can access updated category!",
+      });
     }
 
     const { id } = req.params;
-    const isAdmin = user.role === UserRole.ADMIN;
 
-    const result = await categoryService.updateCategory(
-      id as string,
-      req.body,
-      isAdmin,
-    );
+    const result = await categoryService.updateCategory(id as string, req.body);
 
     return res.status(201).json({
       success: true,
@@ -111,14 +103,16 @@ const deleteCategory = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user) {
-      throw new Error("You are unauthorize!");
+    if (!user || user.role !== UserRole.ADMIN) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only admin can access deleted category!",
+      });
     }
 
     const { id } = req.params;
-    const isAdmin = user.role === UserRole.ADMIN;
 
-    const result = await categoryService.deleteCategory(id as string, isAdmin);
+    const result = await categoryService.deleteCategory(id as string);
 
     return res.status(201).json({
       success: true,
