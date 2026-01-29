@@ -45,11 +45,7 @@ const getCategoryById = async (id: string) => {
   return result;
 };
 
-const updateCategory = async (
-  id: string,
-  data: Partial<Category>,
-  isAdmin: boolean,
-) => {
+const updateCategory = async (id: string, data: Partial<Category>) => {
   const category = await prisma.category.findUniqueOrThrow({
     where: {
       id,
@@ -58,10 +54,6 @@ const updateCategory = async (
       id: true,
     },
   });
-
-  if (!isAdmin) {
-    throw new Error("You have no access!");
-  }
 
   const result = await prisma.category.update({
     where: {
@@ -72,7 +64,7 @@ const updateCategory = async (
   return result;
 };
 
-const deleteCategory = async (id: string, isAdmin: boolean) => {
+const deleteCategory = async (id: string) => {
   const category = await prisma.category.findUniqueOrThrow({
     where: {
       id,
@@ -81,10 +73,6 @@ const deleteCategory = async (id: string, isAdmin: boolean) => {
       id: true,
     },
   });
-
-  if (!isAdmin) {
-    throw new Error("You have no access!");
-  }
 
   return await prisma.category.delete({
     where: {

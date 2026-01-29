@@ -7,10 +7,10 @@ const createMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user) {
-      return res.status(400).json({
+    if (!user || user.role !== UserRole.SELLER) {
+      return res.status(403).json({
         success: false,
-        message: "You are Unauthorized!",
+        message: "Forbidden! Only seller can access created medicine!",
       });
     }
 
@@ -18,13 +18,6 @@ const createMedicine = async (req: Request, res: Response) => {
       return res.status(403).json({
         success: false,
         message: "Your account isn't active!",
-      });
-    }
-
-    if (user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "You don't have access to create Medicine!",
       });
     }
 
@@ -112,15 +105,51 @@ const getMyMedicines = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user) {
-      throw new Error("You are unauthorize!");
+    if (!user || user.role !== UserRole.SELLER) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only seller can access own medicines.",
+      });
     }
 
-    const result = await medicineService.getMyMedicines(user.id);
+    const { search } = req.query;
 
-    return res.status(201).json({
+    const searchContent = typeof search === "string" ? search : undefined;
+
+    const categoryId = req.query.categoryId as string | undefined;
+
+    const isActive = req.query.isActive
+      ? req.query.isActive === "true"
+      : undefined;
+
+    const price = req.query.price as number | undefined;
+
+    const stock = Number(req.query.stock) as number | undefined;
+
+    const manufacturer = req.query.manufacturer as string | undefined;
+
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
+      req.query,
+    );
+
+    const result = await medicineService.getMyMedicines({
+      sellerId: user.id,
+      search: searchContent,
+      isActive,
+      categoryId,
+      stock,
+      price,
+      manufacturer,
+      page,
+      limit,
+      skip,
+      sortBy,
+      sortOrder,
+    });
+
+    return res.status(200).json({
       success: true,
-      message: "Fetching my medicines successfully!",
+      message: "My medicines fetched successfully!",
       data: result,
     });
   } catch (err: any) {
@@ -158,16 +187,14 @@ const updateMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user) {
-      throw new Error("You are unauthorize!");
+    if (!user || user.role !== UserRole.SELLER) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only seller can updated own medicine!",
+      });
     }
 
     const { id } = req.params;
-    const isSeller = user.role === UserRole.SELLER;
-
-    if (!isSeller) {
-      throw new Error("You have no access to updated!");
-    }
 
     const result = await medicineService.updateMedicine(
       id as string,
@@ -193,16 +220,14 @@ const deleteMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user) {
-      throw new Error("You are unauthorize!");
+    if (!user || user.role !== UserRole.SELLER) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only seller can deleted own medicine!",
+      });
     }
 
     const { id } = req.params;
-    const isSeller = user.role === UserRole.SELLER;
-
-    if (!isSeller) {
-      throw new Error("You have no access to deleted!");
-    }
 
     const result = await medicineService.deleteMedicine(id as string, user.id);
 
