@@ -8,8 +8,19 @@ const createCategory = async (data: Category) => {
   return result;
 };
 
-const getAllCategory = async () => {
+/* const getAllCategory = async () => {
   const result = await prisma.category.findMany();
+  return result;
+}; */
+
+const getAllCategory = async () => {
+  const result = await prisma.category.findMany({
+    include: {
+      _count: {
+        select: { medicines: true },
+      },
+    },
+  });
   return result;
 };
 
@@ -17,6 +28,23 @@ const getCategoryById = async (id: string) => {
   const result = await prisma.category.findUniqueOrThrow({
     where: {
       id,
+    },
+    include: {
+      medicines: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          stock: true,
+          isActive: true,
+          seller: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
     },
   });
   return result;
