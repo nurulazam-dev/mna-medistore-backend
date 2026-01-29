@@ -116,7 +116,7 @@ const getMyMedicines = async (req: Request, res: Response) => {
       throw new Error("You are unauthorize!");
     }
 
-    const result = await medicineService.getMedicineById(user?.id as string);
+    const result = await medicineService.getMyMedicines(user.id);
 
     return res.status(201).json({
       success: true,

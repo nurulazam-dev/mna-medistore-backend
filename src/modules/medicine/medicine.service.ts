@@ -118,7 +118,34 @@ const getAllMedicine = async ({
   };
 };
 
-const getMyMedicines = async () => {};
+const getMyMedicines = async (sellerId: string) => {
+  const result = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: sellerId,
+    },
+    select: {
+      medicines: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          stock: true,
+          isActive: true,
+          manufacturer: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+  return result.medicines;
+};
 
 const getMedicineById = async (id: string) => {
   const result = await prisma.medicine.findUniqueOrThrow({
