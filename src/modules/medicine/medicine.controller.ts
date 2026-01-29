@@ -108,6 +108,30 @@ const getAllMedicine = async (req: Request, res: Response) => {
   }
 };
 
+const getMyMedicines = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      throw new Error("You are unauthorize!");
+    }
+
+    const result = await medicineService.getMedicineById(user?.id as string);
+
+    return res.status(201).json({
+      success: true,
+      message: "Fetching my medicines successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
 const getMedicineById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -199,6 +223,7 @@ const deleteMedicine = async (req: Request, res: Response) => {
 export const MedicineController = {
   createMedicine,
   getAllMedicine,
+  getMyMedicines,
   getMedicineById,
   updateMedicine,
   deleteMedicine,

@@ -118,6 +118,8 @@ const getAllMedicine = async ({
   };
 };
 
+const getMyMedicines = async () => {};
+
 const getMedicineById = async (id: string) => {
   const result = await prisma.medicine.findUniqueOrThrow({
     where: {
@@ -196,6 +198,7 @@ const deleteMedicine = async (id: string, sellerId: string) => {
 export const medicineService = {
   createMedicine,
   getAllMedicine,
+  getMyMedicines,
   getMedicineById,
   updateMedicine,
   deleteMedicine,
