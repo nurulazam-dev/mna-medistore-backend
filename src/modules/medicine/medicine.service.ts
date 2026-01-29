@@ -8,7 +8,7 @@ const createMedicine = async (data: Medicine) => {
   return result;
 };
 
-/* const getAllMedicine = async () => {
+const getAllMedicine = async () => {
   const result = await prisma.category.findMany({
     include: {
       _count: {
@@ -17,7 +17,7 @@ const createMedicine = async (data: Medicine) => {
     },
   });
   return result;
-}; */
+};
 
 /* const getMedicineById = async (id: string) => {
   const result = await prisma.category.findUniqueOrThrow({
@@ -95,7 +95,7 @@ const createMedicine = async (data: Medicine) => {
 
 export const medicineService = {
   createMedicine,
-  //   getAllMedicine,
+  getAllMedicine,
   //   getMedicineById,
   //   updateMedicine,
   //   deleteMedicine,

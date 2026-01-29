@@ -50,13 +50,13 @@ const createMedicine = async (req: Request, res: Response) => {
   }
 };
 
-/* const getAllMedicine = async (req: Request, res: Response) => {
+const getAllMedicine = async (req: Request, res: Response) => {
   try {
     const result = await medicineService.getAllMedicine();
 
     return res.status(201).json({
       success: true,
-      message: "Category fetch successfully!",
+      message: "Medicine fetch successfully!",
       data: result,
     });
   } catch (err: any) {
@@ -66,7 +66,7 @@ const createMedicine = async (req: Request, res: Response) => {
       message: err.message || "Internal Server Error",
     });
   }
-}; */
+};
 
 /* const getMedicineById = async (req: Request, res: Response) => {
   try {
@@ -150,7 +150,7 @@ const createMedicine = async (req: Request, res: Response) => {
 
 export const MedicineController = {
   createMedicine,
-  //   getAllMedicine,
+  getAllMedicine,
   //   getMedicineById,
   //   updateMedicine,
   //   deleteMedicine,
