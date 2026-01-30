@@ -88,12 +88,24 @@ const cancelMyOrder = async (orderId: string, userId: string) => {
   });
 };
 
+const getMyMedicinesOrder = async (sellerId: string) => {
+  return await prisma.orderItem.findMany({
+    where: {
+      sellerId,
+    },
+    include: {
+      order: true,
+      medicine: true,
+    },
+  });
+};
+
 export const orderService = {
   createOrder,
   getMyAllOrder,
   getOrderById,
   cancelMyOrder,
-  // getMyMedicinesOrder,
+  getMyMedicinesOrder,
   // updateMyMedicinesOrder,
   // getAllOrders,
 };
