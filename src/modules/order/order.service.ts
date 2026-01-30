@@ -42,9 +42,27 @@ const createOrder = async (userId: string, payload: any) => {
   });
 };
 
+const getMyAllOrder = async (userId: string) => {
+  return await prisma.order.findMany({
+    where: {
+      customerId: userId,
+    },
+    include: {
+      items: {
+        include: {
+          medicine: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
+
 export const orderService = {
   createOrder,
-  // getMyAllOrder,
+  getMyAllOrder,
   // getOrderById,
   // cancelMyOrder,
   // getMyMedicinesOrder,

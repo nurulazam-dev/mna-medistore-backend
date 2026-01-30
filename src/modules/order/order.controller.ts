@@ -43,9 +43,46 @@ const createOrder = async (req: Request, res: Response) => {
   }
 };
 
+const getMyAllOrder = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "You are unauthorize!",
+      });
+    }
+
+    if (user.role !== UserRole.CUSTOMER) {
+      return res.status(403).json({
+        success: false,
+        message: "You don't have access to get orders!",
+      });
+    }
+    /* ====================================
+            bug: only user get his order
+         -----------to fixed here----------
+   ======================================== */
+    const result = await orderService.getMyAllOrder(user.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "My all orders fetched successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "My all orders fetched fail!",
+    });
+  }
+};
+
 export const orderController = {
   createOrder,
-  // getMyAllOrder,
+  getMyAllOrder,
   // getOrderById,
   // cancelMyOrder,
   // getMyMedicinesOrder,
