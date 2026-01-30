@@ -60,10 +60,26 @@ const getMyAllOrder = async (userId: string) => {
   });
 };
 
+const getOrderById = async (orderId: string, userId: string) => {
+  return await prisma.order.findUniqueOrThrow({
+    where: {
+      id: orderId,
+      customerId: userId,
+    },
+    include: {
+      items: {
+        include: {
+          medicine: true,
+        },
+      },
+    },
+  });
+};
+
 export const orderService = {
   createOrder,
   getMyAllOrder,
-  // getOrderById,
+  getOrderById,
   // cancelMyOrder,
   // getMyMedicinesOrder,
   // updateMyMedicinesOrder,

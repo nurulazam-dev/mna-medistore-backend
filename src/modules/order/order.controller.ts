@@ -80,10 +80,27 @@ const getMyAllOrder = async (req: Request, res: Response) => {
   }
 };
 
+const getOrderById = async (req: Request, res: Response) => {
+  const user = req.user;
+
+  if (!user) {
+    return res.status(403).json({
+      success: false,
+      message: "You are unauthorize!",
+    });
+  }
+
+  const result = await orderService.getOrderById(req.params.id, user.id);
+  res.status(200).json({
+    success: true,
+    data: result,
+  });
+};
+
 export const orderController = {
   createOrder,
   getMyAllOrder,
-  // getOrderById,
+  getOrderById,
   // cancelMyOrder,
   // getMyMedicinesOrder,
   // updateMyMedicinesOrder,
