@@ -13,6 +13,7 @@ const updateUserStatus = async (id: string, data: Partial<User>) => {
     },
     select: {
       id: true,
+      emailVerified: true,
       status: true,
     },
   });
@@ -21,7 +22,10 @@ const updateUserStatus = async (id: string, data: Partial<User>) => {
     where: {
       id: user.id,
     },
-    data,
+    data: {
+      emailVerified: user.emailVerified,
+      status,
+    },
   });
   return result;
 };

@@ -22,9 +22,9 @@ const createCategory = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Category created fail!",
     });
   }
 };
@@ -33,16 +33,16 @@ const getAllCategory = async (req: Request, res: Response) => {
   try {
     const result = await categoryService.getAllCategory();
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Category fetch successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Category fetch fail!",
     });
   }
 };
@@ -56,16 +56,16 @@ const getCategoryById = async (req: Request, res: Response) => {
     }
     const result = await categoryService.getCategoryById(id as string);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Get Category successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Get Category fail!",
     });
   }
 };
@@ -85,16 +85,16 @@ const updateCategory = async (req: Request, res: Response) => {
 
     const result = await categoryService.updateCategory(id as string, req.body);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Category updated successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Category updated fail!",
     });
   }
 };
@@ -114,16 +114,16 @@ const deleteCategory = async (req: Request, res: Response) => {
 
     const result = await categoryService.deleteCategory(id as string);
 
-    return res.status(201).json({
+    return res.status(204).json({
       success: true,
       message: "Category deleted successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Category deleted fail!",
     });
   }
 };
