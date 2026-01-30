@@ -13,7 +13,6 @@ const updateUserStatus = async (id: string, data: Partial<User>) => {
     },
     select: {
       id: true,
-      status: true,
     },
   });
 
