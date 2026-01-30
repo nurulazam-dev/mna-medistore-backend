@@ -76,11 +76,23 @@ const getOrderById = async (orderId: string, userId: string) => {
   });
 };
 
+const cancelMyOrder = async (orderId: string, userId: string) => {
+  return await prisma.order.update({
+    where: {
+      id: orderId,
+      customerId: userId,
+    },
+    data: {
+      status: OrderStatus.CANCELLED,
+    },
+  });
+};
+
 export const orderService = {
   createOrder,
   getMyAllOrder,
   getOrderById,
-  // cancelMyOrder,
+  cancelMyOrder,
   // getMyMedicinesOrder,
   // updateMyMedicinesOrder,
   // getAllOrders,
