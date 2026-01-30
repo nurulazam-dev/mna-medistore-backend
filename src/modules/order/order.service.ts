@@ -77,6 +77,20 @@ const getOrderById = async (orderId: string, userId: string) => {
 };
 
 const cancelMyOrder = async (orderId: string, userId: string) => {
+  const orderData = await prisma.order.findUniqueOrThrow({
+    where: {
+      id: orderId,
+    },
+    select: {
+      id: true,
+      customerId: true,
+    },
+  });
+
+  if (orderData.customerId !== userId) {
+    throw new Error("You aren't customer of this order!");
+  }
+
   return await prisma.order.update({
     where: {
       id: orderId,
