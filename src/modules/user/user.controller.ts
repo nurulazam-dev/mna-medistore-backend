@@ -22,16 +22,16 @@ const getAllUser = async (req: Request, res: Response) => {
 
     const result = await userService.getAllUser();
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
-      message: "All users fetch successfully!",
+      message: "Get users successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Get users fail!",
     });
   }
 };
@@ -58,16 +58,16 @@ const updateUserStatus = async (req: Request, res: Response) => {
 
     const result = await userService.updateUserStatus(id as string, req.body);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "User updated successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "User updated fail!",
     });
   }
 };
@@ -77,7 +77,7 @@ const updateUserStatus = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -92,16 +92,16 @@ const updateUserStatus = async (req: Request, res: Response) => {
 
     const result = await userService.updateUser(user?.id as string, req.body);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "User updated successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "User updated fail!",
     });
   }
 }; */

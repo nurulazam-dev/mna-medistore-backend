@@ -1,5 +1,4 @@
 import { OrderStatus, PaymentMethod } from "../../../generated/prisma/client";
-import { OrderWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 
 const createOrder = async (userId: string, payload: any) => {
@@ -175,7 +174,7 @@ const getAllOrders = async ({
   sortBy: string;
   sortOrder: string;
 }) => {
-  const conditions: OrderWhereInput[] = [];
+  const conditions: any[] = [];
 
   if (status) {
     conditions.push({
@@ -191,25 +190,48 @@ const getAllOrders = async ({
 
   if (medicineId) {
     conditions.push({
-      medicineId,
+      items: {
+        some: {
+          medicineId,
+        },
+      },
     });
   }
 
   if (sellerId) {
     conditions.push({
-      sellerId,
+      items: {
+        some: {
+          sellerId,
+        },
+      },
     });
   }
 
   if (categoryId) {
     conditions.push({
-      categoryId,
+      items: {
+        some: {
+          medicine: {
+            categoryId,
+          },
+        },
+      },
     });
   }
 
   if (manufacturer) {
     conditions.push({
-      manufacturer,
+      items: {
+        some: {
+          medicine: {
+            manufacturer: {
+              contains: manufacturer,
+              mode: "insensitive",
+            },
+          },
+        },
+      },
     });
   }
 
@@ -225,6 +247,11 @@ const getAllOrders = async ({
           name: true,
           email: true,
           phone: true,
+        },
+      },
+      items: {
+        include: {
+          medicine: true,
         },
       },
     },

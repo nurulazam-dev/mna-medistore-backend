@@ -6,6 +6,7 @@ import { notFound } from "./middleware/notFound";
 import { categoryRouter } from "./modules/category/category.router";
 import { medicineRouter } from "./modules/medicine/medicine.router";
 import { userRouter } from "./modules/user/user.router";
+import { orderRouter } from "./modules/order/order.router";
 
 const app: Application = express();
 
@@ -23,6 +24,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/users", userRouter);
 app.use("/categories", categoryRouter);
 app.use("/medicines", medicineRouter);
+app.use("/orders", orderRouter);
 
 app.get("/", (req, res) => {
   res.send("Running the MNA_MediStore_Server");

@@ -37,9 +37,9 @@ const createMedicine = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Medicine created fail!",
     });
   }
 };
@@ -59,13 +59,9 @@ const getAllMedicine = async (req: Request, res: Response) => {
       : undefined;
 
     const sellerId = req.query.sellerId as string | undefined;
-
     const categoryId = req.query.categoryId as string | undefined;
-
     const price = req.query.price as number | undefined;
-
     const stock = Number(req.query.stock) as number | undefined;
-
     const manufacturer = req.query.manufacturer as string | undefined;
 
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
@@ -87,16 +83,16 @@ const getAllMedicine = async (req: Request, res: Response) => {
       sortOrder,
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Medicine fetch successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Medicine fetch fail!",
     });
   }
 };
@@ -154,9 +150,9 @@ const getMyMedicines = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "My medicine fetch fail!",
     });
   }
 };
@@ -169,16 +165,16 @@ const getMedicineById = async (req: Request, res: Response) => {
     }
     const result = await medicineService.getMedicineById(id as string);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Get Medicine successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Get Medicine fail!",
     });
   }
 };
@@ -202,16 +198,16 @@ const updateMedicine = async (req: Request, res: Response) => {
       user.id,
     );
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Medicine updated successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Medicine updated fail!",
     });
   }
 };
@@ -231,16 +227,16 @@ const deleteMedicine = async (req: Request, res: Response) => {
 
     const result = await medicineService.deleteMedicine(id as string, user.id);
 
-    return res.status(201).json({
+    return res.status(204).json({
       success: true,
       message: "Medicine deleted successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
-      message: err.message || "Internal Server Error",
+      message: err.message || "Medicine deleted fail!",
     });
   }
 };

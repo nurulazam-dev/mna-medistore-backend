@@ -9,7 +9,7 @@ const createOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -33,12 +33,12 @@ const createOrder = async (req: Request, res: Response) => {
 
     res.status(201).json({
       success: true,
-      message: "Order placed!",
+      message: "Order placed successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
       message: err.message || "Order placed fail!",
     });
@@ -50,7 +50,7 @@ const getMyAllOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -75,7 +75,7 @@ const getMyAllOrder = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
       message: err.message || "My all orders fetched fail!",
     });
@@ -87,7 +87,7 @@ const getOrderById = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -107,7 +107,7 @@ const getOrderById = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
       message: err.message || "Fail to get order",
     });
@@ -119,7 +119,7 @@ const cancelMyOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -135,14 +135,14 @@ const cancelMyOrder = async (req: Request, res: Response) => {
     const { id } = req.params;
     const result = await orderService.cancelMyOrder(id as string, user.id);
 
-    return res.status(200).json({
+    return res.status(204).json({
       success: true,
       message: "Order cancelled",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
       message: err.message || "Fail to Order cancelled",
     });
@@ -154,7 +154,7 @@ const getMyMedicinesOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -175,7 +175,7 @@ const getMyMedicinesOrder = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
       message: err.message || "Internal Server Error",
     });
@@ -188,7 +188,7 @@ const updateMyMedicinesOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -206,14 +206,14 @@ const updateMyMedicinesOrder = async (req: Request, res: Response) => {
       req.body.status,
       user.id,
     );
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Order status updated",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
       message: err.message || "Order status updated fail",
     });
@@ -223,14 +223,10 @@ const updateMyMedicinesOrder = async (req: Request, res: Response) => {
 const getAllOrders = async (req: Request, res: Response) => {
   try {
     const status = req.query.status as OrderStatus | undefined;
-
     const sellerId = req.query.sellerId as string | undefined;
     const customerId = req.query.customerId as string | undefined;
-
     const medicineId = req.query.medicineId as string | undefined;
-
     const categoryId = req.query.categoryId as string | undefined;
-
     const manufacturer = req.query.manufacturer as string | undefined;
 
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
@@ -240,7 +236,7 @@ const getAllOrders = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "You are unauthorize!",
       });
@@ -267,14 +263,14 @@ const getAllOrders = async (req: Request, res: Response) => {
       sortOrder,
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Orders fetch successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(500).json({
+    return res.status(404).json({
       success: false,
       message: err.message || "Order fetch fail",
     });
