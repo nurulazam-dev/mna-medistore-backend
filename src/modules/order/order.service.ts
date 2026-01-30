@@ -84,11 +84,16 @@ const cancelMyOrder = async (orderId: string, userId: string) => {
     select: {
       id: true,
       customerId: true,
+      status: true,
     },
   });
 
   if (orderData.customerId !== userId) {
     throw new Error("You aren't customer of this order!");
+  }
+
+  if (orderData.status !== OrderStatus.PLACED) {
+    throw new Error("You can't cancel this order!");
   }
 
   return await prisma.order.update({

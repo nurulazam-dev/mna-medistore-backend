@@ -113,20 +113,38 @@ const getOrderById = async (req: Request, res: Response) => {
 };
 
 const cancelMyOrder = async (req: Request, res: Response) => {
-  const user = req.user;
+  try {
+    const user = req.user;
 
-  if (!user) {
-    return res.status(403).json({
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "You are unauthorize!",
+      });
+    }
+
+    if (user.role !== UserRole.CUSTOMER) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only customer cancel his own order!",
+      });
+    }
+
+    const { id } = req.params;
+    const result = await orderService.cancelMyOrder(id as string, user.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Order cancelled",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
       success: false,
-      message: "You are unauthorize!",
+      message: err.message || "Fail to Order cancelled",
     });
   }
-  const result = await orderService.cancelMyOrder(req.params.id, user.id);
-  res.status(200).json({
-    success: true,
-    message: "Order cancelled",
-    data: result,
-  });
 };
 
 const getMyMedicinesOrder = async (req: Request, res: Response) => {
