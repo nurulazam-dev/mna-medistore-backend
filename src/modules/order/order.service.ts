@@ -122,12 +122,23 @@ const getMyMedicinesOrder = async (sellerId: string) => {
 const updateMyMedicinesOrder = async (
   orderItemId: string,
   status: OrderStatus,
+  userId: string,
 ) => {
   const item = await prisma.orderItem.findUniqueOrThrow({
     where: {
       id: orderItemId,
     },
+    select: {
+      id: true,
+      orderId: true,
+      sellerId: true,
+    },
   });
+
+  if (item.sellerId !== userId) {
+    throw new Error("You aren't seller of this medicine order!");
+  }
+
   return await prisma.order.update({
     where: {
       id: item.orderId,

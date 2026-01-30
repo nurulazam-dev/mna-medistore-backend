@@ -181,15 +181,41 @@ const getMyMedicinesOrder = async (req: Request, res: Response) => {
 };
 
 const updateMyMedicinesOrder = async (req: Request, res: Response) => {
-  const result = await orderService.updateMyMedicinesOrder(
-    req.params.id,
-    req.body.status,
-  );
-  res.status(200).json({
-    success: true,
-    message: "Status updated",
-    data: result,
-  });
+  try {
+    const { id } = req.params;
+    const user = req.user;
+
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "You are unauthorize!",
+      });
+    }
+
+    if (user.role !== UserRole.SELLER) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only seller can updated own medicine order!",
+      });
+    }
+
+    const result = await orderService.updateMyMedicinesOrder(
+      id as string,
+      req.body.status,
+      user.id,
+    );
+    res.status(201).json({
+      success: true,
+      message: "Order status updated",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Order status updated fail",
+    });
+  }
 };
 
 const getAllOrders = async (req: Request, res: Response) => {
