@@ -100,12 +100,31 @@ const getMyMedicinesOrder = async (sellerId: string) => {
   });
 };
 
+const updateMyMedicinesOrder = async (
+  orderItemId: string,
+  status: OrderStatus,
+) => {
+  const item = await prisma.orderItem.findUniqueOrThrow({
+    where: {
+      id: orderItemId,
+    },
+  });
+  return await prisma.order.update({
+    where: {
+      id: item.orderId,
+    },
+    data: {
+      status,
+    },
+  });
+};
+
 export const orderService = {
   createOrder,
   getMyAllOrder,
   getOrderById,
   cancelMyOrder,
   getMyMedicinesOrder,
-  // updateMyMedicinesOrder,
+  updateMyMedicinesOrder,
   // getAllOrders,
 };

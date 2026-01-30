@@ -130,12 +130,24 @@ const getMyMedicinesOrder = async (req: Request, res: Response) => {
   });
 };
 
+const updateMyMedicinesOrder = async (req: Request, res: Response) => {
+  const result = await orderService.updateMyMedicinesOrder(
+    req.params.id,
+    req.body.status,
+  );
+  res.status(200).json({
+    success: true,
+    message: "Status updated",
+    data: result,
+  });
+};
+
 export const orderController = {
   createOrder,
   getMyAllOrder,
   getOrderById,
   cancelMyOrder,
   getMyMedicinesOrder,
-  // updateMyMedicinesOrder,
+  updateMyMedicinesOrder,
   // getAllOrders,
 };
