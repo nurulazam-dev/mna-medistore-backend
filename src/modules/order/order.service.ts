@@ -119,6 +119,20 @@ const updateMyMedicinesOrder = async (
   });
 };
 
+const getAllOrders = async () => {
+  return await prisma.order.findMany({
+    include: {
+      customer: {
+        select: {
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+    },
+  });
+};
+
 export const orderService = {
   createOrder,
   getMyAllOrder,
@@ -126,5 +140,5 @@ export const orderService = {
   cancelMyOrder,
   getMyMedicinesOrder,
   updateMyMedicinesOrder,
-  // getAllOrders,
+  getAllOrders,
 };

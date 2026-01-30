@@ -142,6 +142,14 @@ const updateMyMedicinesOrder = async (req: Request, res: Response) => {
   });
 };
 
+const getAllOrders = async (req: Request, res: Response) => {
+  const result = await orderService.getAllOrders();
+  res.status(200).json({
+    success: true,
+    data: result,
+  });
+};
+
 export const orderController = {
   createOrder,
   getMyAllOrder,
@@ -149,5 +157,5 @@ export const orderController = {
   cancelMyOrder,
   getMyMedicinesOrder,
   updateMyMedicinesOrder,
-  // getAllOrders,
+  getAllOrders,
 };
