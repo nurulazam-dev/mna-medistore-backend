@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { orderService } from "./order.service";
+import { OrderStatus } from "../../../generated/prisma/enums";
+import paginationHelper from "../../helpers/paginationHelper";
 
 const createOrder = async (req: Request, res: Response) => {
   try {
@@ -219,11 +221,64 @@ const updateMyMedicinesOrder = async (req: Request, res: Response) => {
 };
 
 const getAllOrders = async (req: Request, res: Response) => {
-  const result = await orderService.getAllOrders();
-  res.status(200).json({
-    success: true,
-    data: result,
-  });
+  try {
+    const status = req.query.status as OrderStatus | undefined;
+
+    const sellerId = req.query.sellerId as string | undefined;
+    const customerId = req.query.customerId as string | undefined;
+
+    const medicineId = req.query.medicineId as string | undefined;
+
+    const categoryId = req.query.categoryId as string | undefined;
+
+    const manufacturer = req.query.manufacturer as string | undefined;
+
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
+      req.query,
+    );
+
+    const user = req.user;
+
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "You are unauthorize!",
+      });
+    }
+
+    if (user.role !== UserRole.ADMIN) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden! Only admin can access the orders!",
+      });
+    }
+
+    const result = await orderService.getAllOrders({
+      status,
+      sellerId,
+      medicineId,
+      customerId,
+      categoryId,
+      manufacturer,
+      page,
+      limit,
+      skip,
+      sortBy,
+      sortOrder,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Orders fetch successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Order fetch fail",
+    });
+  }
 };
 
 export const orderController = {

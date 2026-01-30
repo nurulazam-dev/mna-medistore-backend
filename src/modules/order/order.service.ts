@@ -1,4 +1,5 @@
 import { OrderStatus, PaymentMethod } from "../../../generated/prisma/client";
+import { OrderWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 
 const createOrder = async (userId: string, payload: any) => {
@@ -149,8 +150,75 @@ const updateMyMedicinesOrder = async (
   });
 };
 
-const getAllOrders = async () => {
-  return await prisma.order.findMany({
+const getAllOrders = async ({
+  status,
+  categoryId,
+  customerId,
+  sellerId,
+  medicineId,
+  manufacturer,
+  page,
+  limit,
+  skip,
+  sortBy,
+  sortOrder,
+}: {
+  status: OrderStatus | undefined;
+  categoryId: string | undefined;
+  customerId: string | undefined;
+  sellerId: string | undefined;
+  medicineId: string | undefined;
+  manufacturer: string | undefined;
+  page: number;
+  limit: number;
+  skip: number;
+  sortBy: string;
+  sortOrder: string;
+}) => {
+  const conditions: OrderWhereInput[] = [];
+
+  if (status) {
+    conditions.push({
+      status,
+    });
+  }
+
+  if (customerId) {
+    conditions.push({
+      customerId,
+    });
+  }
+
+  if (medicineId) {
+    conditions.push({
+      medicineId,
+    });
+  }
+
+  if (sellerId) {
+    conditions.push({
+      sellerId,
+    });
+  }
+
+  if (categoryId) {
+    conditions.push({
+      categoryId,
+    });
+  }
+
+  if (manufacturer) {
+    conditions.push({
+      manufacturer,
+    });
+  }
+
+  const allOrder = await prisma.order.findMany({
+    take: limit,
+    skip,
+    where: {
+      AND: conditions,
+    },
     include: {
       customer: {
         select: {
@@ -160,7 +228,25 @@ const getAllOrders = async () => {
         },
       },
     },
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
   });
+
+  const total = await prisma.order.count({
+    where: {
+      AND: conditions,
+    },
+  });
+  return {
+    data: allOrder,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 export const orderService = {
