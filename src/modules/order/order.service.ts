@@ -10,34 +10,57 @@ const createOrder = async (userId: string, payload: any) => {
         customerId: userId,
         status: OrderStatus.PLACED,
         payment_method: PaymentMethod.CASH_ON_DELIVERY,
-        total_amount,
+        total_amount: Number(total_amount),
         shipping_address,
       },
     });
 
-    const orderItemsData = items.map((item: any) => ({
-      orderId: order.id,
-      medicineId: item.medicineId,
-      sellerId: item.sellerId,
-      quantity: item.quantity,
-      unit_price: item.price,
-      sub_total: item.price * item.quantity,
-    }));
-
-    await tx.orderItem.createMany({ data: orderItemsData });
+    const orderItemsData = [];
 
     for (const item of items) {
+      const medicine = await tx.medicine.findUnique({
+        where: {
+          id: item.medicineId,
+        },
+      });
+
+      if (!medicine) {
+        throw new Error("Medicine not found!");
+      }
+
+      const unitPrice = Number(medicine.price);
+      const quantity = Number(item.quantity);
+      const availableStock = Number(medicine.stock || 0);
+
+      if (quantity > availableStock) {
+        throw new Error(`You can't order more than stock!`);
+      }
+
+      orderItemsData.push({
+        orderId: order.id,
+        medicineId: item.medicineId,
+        sellerId: item.sellerId,
+        quantity: quantity,
+        unit_price: unitPrice,
+        sub_total: unitPrice * quantity,
+      });
+
       await tx.medicine.update({
         where: {
           id: item.medicineId,
         },
         data: {
           stock: {
-            decrement: item.quantity,
+            decrement: quantity,
           },
         },
       });
     }
+
+    await tx.orderItem.createMany({
+      data: orderItemsData,
+    });
+
     return order;
   });
 };

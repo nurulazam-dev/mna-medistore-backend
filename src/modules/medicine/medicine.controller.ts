@@ -60,7 +60,7 @@ const getAllMedicine = async (req: Request, res: Response) => {
 
     const sellerId = req.query.sellerId as string | undefined;
     const categoryId = req.query.categoryId as string | undefined;
-    const price = req.query.price as number | undefined;
+    const price = Number(req.query.price) as number | undefined;
     const stock = Number(req.query.stock) as number | undefined;
     const manufacturer = req.query.manufacturer as string | undefined;
 
@@ -118,7 +118,7 @@ const getMyMedicines = async (req: Request, res: Response) => {
       ? req.query.isActive === "true"
       : undefined;
 
-    const price = req.query.price as number | undefined;
+    const price = Number(req.query.price) as number | undefined;
 
     const stock = Number(req.query.stock) as number | undefined;
 
