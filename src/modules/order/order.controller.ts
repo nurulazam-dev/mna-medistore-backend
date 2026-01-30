@@ -81,20 +81,35 @@ const getMyAllOrder = async (req: Request, res: Response) => {
 };
 
 const getOrderById = async (req: Request, res: Response) => {
-  const user = req.user;
+  try {
+    const user = req.user;
 
-  if (!user) {
-    return res.status(403).json({
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "You are unauthorize!",
+      });
+    }
+
+    const { id } = req.params;
+    if (!id) {
+      throw new Error("Order Id is required!");
+    }
+
+    const result = await orderService.getOrderById(id as string, user.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Get order successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({
       success: false,
-      message: "You are unauthorize!",
+      message: err.message || "Fail to get order",
     });
   }
-
-  const result = await orderService.getOrderById(req.params.id, user.id);
-  res.status(200).json({
-    success: true,
-    data: result,
-  });
 };
 
 const cancelMyOrder = async (req: Request, res: Response) => {
