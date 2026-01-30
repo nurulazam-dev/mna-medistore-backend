@@ -73,7 +73,18 @@ const getMyAllOrder = async (userId: string) => {
     include: {
       items: {
         include: {
-          medicine: true,
+          medicine: {
+            select: {
+              name: true,
+              image: true,
+              sellerId: true,
+              categoryId: true,
+              price: true,
+              stock: true,
+              manufacturer: true,
+              isActive: true,
+            },
+          },
         },
       },
     },
@@ -92,7 +103,18 @@ const getOrderById = async (orderId: string, userId: string) => {
     include: {
       items: {
         include: {
-          medicine: true,
+          medicine: {
+            select: {
+              name: true,
+              image: true,
+              sellerId: true,
+              categoryId: true,
+              price: true,
+              stock: true,
+              manufacturer: true,
+              isActive: true,
+            },
+          },
         },
       },
     },
@@ -137,7 +159,16 @@ const getMyMedicinesOrder = async (sellerId: string) => {
     },
     include: {
       order: true,
-      medicine: true,
+      medicine: {
+        select: {
+          name: true,
+          image: true,
+          categoryId: true,
+          price: true,
+          manufacturer: true,
+          isActive: true,
+        },
+      },
     },
   });
 };
@@ -147,7 +178,7 @@ const updateMyMedicinesOrder = async (
   status: OrderStatus,
   userId: string,
 ) => {
-  const item = await prisma.orderItem.findUniqueOrThrow({
+  const orderItem = await prisma.orderItem.findUniqueOrThrow({
     where: {
       id: orderItemId,
     },
@@ -158,13 +189,13 @@ const updateMyMedicinesOrder = async (
     },
   });
 
-  if (item.sellerId !== userId) {
+  if (orderItem.sellerId !== userId) {
     throw new Error("You aren't seller of this medicine order!");
   }
 
   return await prisma.order.update({
     where: {
-      id: item.orderId,
+      id: orderItem.orderId,
     },
     data: {
       status,
@@ -274,7 +305,18 @@ const getAllOrders = async ({
       },
       items: {
         include: {
-          medicine: true,
+          medicine: {
+            select: {
+              name: true,
+              image: true,
+              sellerId: true,
+              categoryId: true,
+              price: true,
+              stock: true,
+              manufacturer: true,
+              isActive: true,
+            },
+          },
         },
       },
     },

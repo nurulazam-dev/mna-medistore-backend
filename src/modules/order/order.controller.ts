@@ -40,8 +40,7 @@ const createOrder = async (req: Request, res: Response) => {
     console.error(err);
     return res.status(400).json({
       success: false,
-      // message: err.message || "Order placed fail!",
-      message: "Order placed fail!",
+      message: err.message || "Order placed fail!",
     });
   }
 };
@@ -63,10 +62,6 @@ const getMyAllOrder = async (req: Request, res: Response) => {
         message: "You don't have access to get orders!",
       });
     }
-    /* ====================================
-            bug: only user get his order
-         -----------to fixed here----------
-   ======================================== */
 
     const result = await orderService.getMyAllOrder(user.id);
 
