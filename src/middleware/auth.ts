@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { auth as betterAuth } from "../lib/auth";
+import ApiErrorHandler from "../helpers/ApiErrorHandler";
 
 export enum UserRole {
   CUSTOMER = "CUSTOMER",
@@ -32,18 +33,8 @@ const auth = (...roles: UserRole[]) => {
       });
 
       if (!session) {
-        return res.status(401).json({
-          success: false,
-          message: "You are not authorized!",
-        });
+        throw new ApiErrorHandler(401, "You are unauthorize!");
       }
-
-      /*  if (!session.user.emailVerified) {
-        return res.status(403).json({
-          success: false,
-          message: "Your email isn't verified!",
-        });
-      } */
 
       req.user = {
         id: session.user.id,
@@ -57,10 +48,10 @@ const auth = (...roles: UserRole[]) => {
       };
 
       if (roles.length && !roles.includes(req.user.role as UserRole)) {
-        return res.status(403).json({
-          success: false,
-          message: "Forbidden! You don't have permission to access.",
-        });
+        throw new ApiErrorHandler(
+          403,
+          "Forbidden! You don't have permission to access!",
+        );
       }
 
       next();

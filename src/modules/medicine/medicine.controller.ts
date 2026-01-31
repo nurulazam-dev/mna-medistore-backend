@@ -2,244 +2,188 @@ import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { medicineService } from "./medicine.service";
 import paginationHelper from "../../helpers/paginationHelper";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
+import catchAsync from "../../helpers/catchAsync";
+import sendResponse from "../../helpers/sendResponse";
 
-const createMedicine = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
+const createMedicine = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
 
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can access created medicine!",
-      });
-    }
-
-    if (user.status !== "ACTIVE") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account isn't active!",
-      });
-    }
-
-    if (!user.emailVerified) {
-      return res.status(403).json({
-        success: false,
-        message: "You aren't verified Seller!",
-      });
-    }
-
-    const result = await medicineService.createMedicine(req.body);
-
-    return res.status(201).json({
-      success: true,
-      message: "Medicine created successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(400).json({
-      success: false,
-      message: err.message || "Medicine created fail!",
-    });
+  if (!user) {
+    throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-};
 
-const getAllMedicine = async (req: Request, res: Response) => {
-  try {
-    const { search } = req.query;
-
-    const searchContent = typeof search === "string" ? search : undefined;
-
-    const isActive = req.query.isActive
-      ? req.query.isActive === "true"
-        ? true
-        : req.query.isActive === "false"
-          ? false
-          : undefined
-      : undefined;
-
-    const sellerId = req.query.sellerId as string | undefined;
-    const categoryId = req.query.categoryId as string | undefined;
-    const price = Number(req.query.price) as number | undefined;
-    const stock = Number(req.query.stock) as number | undefined;
-    const manufacturer = req.query.manufacturer as string | undefined;
-
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
-      req.query,
-    );
-
-    const result = await medicineService.getAllMedicine({
-      search: searchContent,
-      isActive,
-      sellerId,
-      categoryId,
-      price,
-      stock,
-      manufacturer,
-      page,
-      limit,
-      skip,
-      sortBy,
-      sortOrder,
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Medicine fetch successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Medicine fetch fail!",
-    });
+  if (user.status !== "ACTIVE") {
+    throw new ApiErrorHandler(403, "Your account isn't active!");
   }
-};
 
-const getMyMedicines = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
-
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can access own medicines.",
-      });
-    }
-
-    const { search } = req.query;
-
-    const searchContent = typeof search === "string" ? search : undefined;
-
-    const categoryId = req.query.categoryId as string | undefined;
-
-    const isActive = req.query.isActive
-      ? req.query.isActive === "true"
-      : undefined;
-
-    const price = Number(req.query.price) as number | undefined;
-
-    const stock = Number(req.query.stock) as number | undefined;
-
-    const manufacturer = req.query.manufacturer as string | undefined;
-
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
-      req.query,
-    );
-
-    const result = await medicineService.getMyMedicines({
-      sellerId: user.id,
-      search: searchContent,
-      isActive,
-      categoryId,
-      stock,
-      price,
-      manufacturer,
-      page,
-      limit,
-      skip,
-      sortBy,
-      sortOrder,
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "My medicines fetched successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "My medicine fetch fail!",
-    });
+  if (!user.emailVerified) {
+    throw new ApiErrorHandler(403, "You aren't verified Seller!");
   }
-};
 
-const getMedicineById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    if (!id) {
-      throw new Error("Medicine Id is required!");
-    }
-    const result = await medicineService.getMedicineById(id as string);
+  const result = await medicineService.createMedicine(req.body);
 
-    return res.status(200).json({
-      success: true,
-      message: "Get Medicine successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Get Medicine fail!",
-    });
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Medicine created successfully!",
+    data: result,
+  });
+});
+
+const getAllMedicine = catchAsync(async (req: Request, res: Response) => {
+  const { search } = req.query;
+
+  const searchContent = typeof search === "string" ? search : undefined;
+
+  const isActive = req.query.isActive
+    ? req.query.isActive === "true"
+      ? true
+      : req.query.isActive === "false"
+        ? false
+        : undefined
+    : undefined;
+
+  const sellerId = req.query.sellerId as string | undefined;
+  const categoryId = req.query.categoryId as string | undefined;
+  const price = Number(req.query.price) as number | undefined;
+  const stock = Number(req.query.stock) as number | undefined;
+  const manufacturer = req.query.manufacturer as string | undefined;
+
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper(req.query);
+
+  const result = await medicineService.getAllMedicine({
+    search: searchContent,
+    isActive,
+    sellerId,
+    categoryId,
+    price,
+    stock,
+    manufacturer,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Medicine fetch successfully!",
+    data: result,
+  });
+});
+
+const getMyMedicines = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  if (!user) {
+    throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-};
-
-const updateMedicine = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
-
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can updated own medicine!",
-      });
-    }
-
-    const { id } = req.params;
-
-    const result = await medicineService.updateMedicine(
-      id as string,
-      req.body,
-      user.id,
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "Medicine updated successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Medicine updated fail!",
-    });
+  if (user.role !== UserRole.SELLER) {
+    throw new ApiErrorHandler(403, "You don't have access!");
   }
-};
 
-const deleteMedicine = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
+  const { search } = req.query;
 
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can deleted own medicine!",
-      });
-    }
+  const searchContent = typeof search === "string" ? search : undefined;
 
-    const { id } = req.params;
+  const categoryId = req.query.categoryId as string | undefined;
 
-    const result = await medicineService.deleteMedicine(id as string, user.id);
+  const isActive = req.query.isActive
+    ? req.query.isActive === "true"
+    : undefined;
 
-    return res.status(204).json({
-      success: true,
-      message: "Medicine deleted successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Medicine deleted fail!",
-    });
+  const price = Number(req.query.price) as number | undefined;
+
+  const stock = Number(req.query.stock) as number | undefined;
+
+  const manufacturer = req.query.manufacturer as string | undefined;
+
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper(req.query);
+
+  const result = await medicineService.getMyMedicines({
+    sellerId: user.id,
+    search: searchContent,
+    isActive,
+    categoryId,
+    stock,
+    price,
+    manufacturer,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "My medicines fetched successfully!",
+    data: result,
+  });
+});
+
+const getMedicineById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new ApiErrorHandler(404, "Medicine Id is required!");
   }
-};
+
+  const result = await medicineService.getMedicineById(id as string);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Get Medicine successfully!",
+    data: result,
+  });
+});
+
+const updateMedicine = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  if (!user) {
+    throw new ApiErrorHandler(401, "You are unauthorize!");
+  }
+
+  const { id } = req.params;
+
+  const result = await medicineService.updateMedicine(
+    id as string,
+    req.body,
+    user.id,
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Medicine updated successfully!",
+    data: result,
+  });
+});
+
+const deleteMedicine = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  if (!user) {
+    throw new ApiErrorHandler(401, "You are unauthorize!");
+  }
+
+  const { id } = req.params;
+
+  const result = await medicineService.deleteMedicine(id as string, user.id);
+
+  sendResponse(res, {
+    statusCode: 204,
+    success: true,
+    message: "Medicine deleted successfully!",
+    data: result,
+  });
+});
 
 export const MedicineController = {
   createMedicine,

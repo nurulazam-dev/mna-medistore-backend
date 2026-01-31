@@ -1,132 +1,72 @@
 import { Request, Response } from "express";
 import { categoryService } from "./category.service";
-import { UserRole } from "../../middleware/auth";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
+import catchAsync from "../../helpers/catchAsync";
+import sendResponse from "../../helpers/sendResponse";
 
-const createCategory = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
+const createCategory = catchAsync(async (req: Request, res: Response) => {
+  const result = await categoryService.createCategory(req.body);
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can  created category!",
-      });
-    }
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Category created successfully!",
+    data: result,
+  });
+});
 
-    const result = await categoryService.createCategory(req.body);
+const getAllCategory = catchAsync(async (req: Request, res: Response) => {
+  const result = await categoryService.getAllCategory();
 
-    return res.status(201).json({
-      success: true,
-      message: "Category created successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(400).json({
-      success: false,
-      message: err.message || "Category created fail!",
-    });
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Category fetch successfully!",
+    data: result,
+  });
+});
+
+const getCategoryById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new ApiErrorHandler(404, "CategoryId is required!");
   }
-};
+  const result = await categoryService.getCategoryById(id as string);
 
-const getAllCategory = async (req: Request, res: Response) => {
-  try {
-    const result = await categoryService.getAllCategory();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Get Category successfully!",
+    data: result,
+  });
+});
 
-    return res.status(200).json({
-      success: true,
-      message: "Category fetch successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Category fetch fail!",
-    });
-  }
-};
+const updateCategory = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-const getCategoryById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
+  const result = await categoryService.updateCategory(id as string, req.body);
 
-    if (!id) {
-      throw new Error("CategoryId is required!");
-    }
-    const result = await categoryService.getCategoryById(id as string);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Category updated successfully!",
+    data: result,
+  });
+});
 
-    return res.status(200).json({
-      success: true,
-      message: "Get Category successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Get Category fail!",
-    });
-  }
-};
+const deleteCategory = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-const updateCategory = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
+  const result = await categoryService.deleteCategory(id as string);
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can access updated category!",
-      });
-    }
-
-    const { id } = req.params;
-
-    const result = await categoryService.updateCategory(id as string, req.body);
-
-    return res.status(200).json({
-      success: true,
-      message: "Category updated successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Category updated fail!",
-    });
-  }
-};
-
-const deleteCategory = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
-
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can access deleted category!",
-      });
-    }
-
-    const { id } = req.params;
-
-    const result = await categoryService.deleteCategory(id as string);
-
-    return res.status(204).json({
-      success: true,
-      message: "Category deleted successfully!",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Category deleted fail!",
-    });
-  }
-};
+  sendResponse(res, {
+    statusCode: 204,
+    success: true,
+    message: "Category deleted successfully!",
+    data: result,
+  });
+});
 
 export const CategoryController = {
   createCategory,

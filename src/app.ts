@@ -7,6 +7,8 @@ import { categoryRouter } from "./modules/category/category.router";
 import { medicineRouter } from "./modules/medicine/medicine.router";
 import { userRouter } from "./modules/user/user.router";
 import { orderRouter } from "./modules/order/order.router";
+import { reviewRouter } from "./modules/review/review.router";
+import globalErrorHandler from "./middleware/globalErrorHandler";
 
 const app: Application = express();
 
@@ -25,11 +27,13 @@ app.use("/users", userRouter);
 app.use("/categories", categoryRouter);
 app.use("/medicines", medicineRouter);
 app.use("/orders", orderRouter);
+app.use("/reviews", reviewRouter);
 
 app.get("/", (req, res) => {
   res.send("Running the MNA_MediStore_Server");
 });
 
 app.use(notFound);
+app.use(globalErrorHandler);
 
 export default app;
