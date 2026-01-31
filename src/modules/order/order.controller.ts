@@ -274,7 +274,7 @@ const getAllOrders = async (req: Request, res: Response) => {
   }
 };
 
-export const orderController = {
+export const OrderController = {
   createOrder,
   getMyAllOrder,
   getOrderById,

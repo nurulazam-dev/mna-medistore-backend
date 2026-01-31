@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import auth, { UserRole } from "../../middleware/auth";
-import { orderController } from "./order.controller";
+import { OrderController } from "./order.controller";
 
 const router = express.Router();
 
@@ -12,34 +12,34 @@ const router = express.Router();
 // updateMyMedicinesOrder, //*sel: patch my Medic ord(upd status)---"/seller/update-my-medicine-orders/:id"
 // getAllOrders,           //*admin: get all orders------------- "/admin/orders"
 
-router.post("/", auth(UserRole.CUSTOMER), orderController.createOrder);
+router.post("/", auth(UserRole.CUSTOMER), OrderController.createOrder);
 router.get(
   "/my-orders",
   auth(UserRole.CUSTOMER),
-  orderController.getMyAllOrder,
+  OrderController.getMyAllOrder,
 );
 router.get(
   "/my-orders/:id",
   auth(UserRole.CUSTOMER),
-  orderController.getOrderById,
+  OrderController.getOrderById,
 );
 router.patch(
   "/my-orders/cancel/:id",
   auth(UserRole.CUSTOMER),
-  orderController.cancelMyOrder,
+  OrderController.cancelMyOrder,
 );
 
 router.get(
   "/seller/my-medicine-orders",
   auth(UserRole.SELLER),
-  orderController.getMyMedicinesOrder,
+  OrderController.getMyMedicinesOrder,
 );
 router.patch(
   "/seller/update-my-medicine-orders/:id",
   auth(UserRole.SELLER),
-  orderController.updateMyMedicinesOrder,
+  OrderController.updateMyMedicinesOrder,
 );
 
-router.get("/admin/orders", auth(UserRole.ADMIN), orderController.getAllOrders);
+router.get("/admin/orders", auth(UserRole.ADMIN), OrderController.getAllOrders);
 
 export const orderRouter: Router = router;
