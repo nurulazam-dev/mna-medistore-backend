@@ -72,7 +72,7 @@ const updateUserStatus = async (req: Request, res: Response) => {
   }
 };
 
-/* const updateUser = async (req: Request, res: Response) => {
+const updateProfile = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -86,25 +86,28 @@ const updateUserStatus = async (req: Request, res: Response) => {
     if (user.status !== "ACTIVE") {
       return res.status(403).json({
         success: false,
-        message: "Your account isn't active!",
+        message: "Your account isn't active. You can't update profile!",
       });
     }
 
-    const result = await userService.updateUser(user?.id as string, req.body);
+    const result = await userService.updateProfile(
+      user?.id as string,
+      req.body,
+    );
 
     return res.status(200).json({
       success: true,
-      message: "User updated successfully!",
+      message: "Profile updated successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
     return res.status(404).json({
       success: false,
-      message: err.message || "User updated fail!",
+      message: err.message || "Profile updated fail!",
     });
   }
-}; */
+};
 
 export const UserController = {
   getAllUser,
