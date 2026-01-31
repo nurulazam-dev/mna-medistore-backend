@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
+import { reviewService } from "./review.service";
 
 const createReview = async (req: Request, res: Response) => {
   try {
@@ -15,7 +16,7 @@ const createReview = async (req: Request, res: Response) => {
     if (user.role !== UserRole.CUSTOMER) {
       return res.status(403).json({
         success: false,
-        message: "You don't have access to order!",
+        message: "You don't have access to create review!",
       });
     }
 
@@ -26,22 +27,22 @@ const createReview = async (req: Request, res: Response) => {
       });
     }
 
-    const result = await orderService.createOrder(user.id, req.body);
+    const result = await reviewService.createReview(user.id, req.body);
 
     res.status(201).json({
       success: true,
-      message: "Order placed successfully!",
+      message: "Review added successfully!",
       data: result,
     });
   } catch (err: any) {
     console.error(err);
     return res.status(400).json({
       success: false,
-      message: err.message || "Order placed fail!",
+      message: err.message || "Review added fail!",
     });
   }
 };
 
-export const reviewController = {
+export const ReviewController = {
   createReview,
 };
