@@ -122,33 +122,51 @@ const getOrderById = async (orderId: string, userId: string) => {
 };
 
 const cancelMyOrder = async (orderId: string, userId: string) => {
-  const orderData = await prisma.order.findUniqueOrThrow({
-    where: {
-      id: orderId,
-    },
-    select: {
-      id: true,
-      customerId: true,
-      status: true,
-    },
-  });
+  return await prisma.$transaction(async (tx) => {
+    const orderData = await prisma.order.findUnique({
+      where: {
+        id: orderId,
+      },
+      include: {
+        items: true,
+      },
+    });
 
-  if (orderData.customerId !== userId) {
-    throw new Error("You aren't customer of this order!");
-  }
+    if (!orderData) {
+      throw new Error("Order not found!");
+    }
 
-  if (orderData.status !== OrderStatus.PLACED) {
-    throw new Error("You can't cancel this order!");
-  }
+    if (orderData.customerId !== userId) {
+      throw new Error("You aren't customer of this order!");
+    }
 
-  return await prisma.order.update({
-    where: {
-      id: orderId,
-      customerId: userId,
-    },
-    data: {
-      status: OrderStatus.CANCELLED,
-    },
+    if (orderData.status !== OrderStatus.PLACED) {
+      throw new Error("You can't cancel this order!");
+    }
+
+    for (const item of orderData.items) {
+      await tx.medicine.update({
+        where: {
+          id: item.medicineId,
+        },
+        data: {
+          stock: {
+            increment: item.quantity,
+          },
+        },
+      });
+    }
+
+    const result = await tx.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: OrderStatus.CANCELLED,
+      },
+    });
+
+    return result;
   });
 };
 
