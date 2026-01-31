@@ -11,6 +11,7 @@ const globalErrorHandler: ErrorRequestHandler = (
   let message = err.message || "Something went wrong!";
   let errorDetails = err;
 
+  // if (err instanceof Prisma.PrismaClientValidationError) {
   if (err instanceof Prisma.PrismaClientValidationError) {
     statusCode = 400;
     message = "Validation error: Check your input fields!";
