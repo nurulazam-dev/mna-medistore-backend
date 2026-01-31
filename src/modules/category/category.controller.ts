@@ -1,16 +1,18 @@
 import { Request, Response } from "express";
 import { categoryService } from "./category.service";
 import { UserRole } from "../../middleware/auth";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 
 const createCategory = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can  created category!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
+    }
+
+    if (user.role !== UserRole.ADMIN) {
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const result = await categoryService.createCategory(req.body);
@@ -52,7 +54,7 @@ const getCategoryById = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!id) {
-      throw new Error("CategoryId is required!");
+      throw new ApiErrorHandler(404, "CategoryId is required!");
     }
     const result = await categoryService.getCategoryById(id as string);
 
@@ -74,11 +76,12 @@ const updateCategory = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can access updated category!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
+    }
+
+    if (user.role !== UserRole.ADMIN) {
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const { id } = req.params;
@@ -103,11 +106,12 @@ const deleteCategory = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can access deleted category!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
+    }
+
+    if (user.role !== UserRole.ADMIN) {
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const { id } = req.params;
