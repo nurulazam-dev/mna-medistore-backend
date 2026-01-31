@@ -98,6 +98,15 @@ const getAllMedicine = async ({
     where: {
       AND: conditions,
     },
+    include: {
+      reviews: {
+        select: {
+          customerId: true,
+          rating: true,
+          comment: true,
+        },
+      },
+    },
     orderBy: {
       [sortBy]: sortOrder,
     },
@@ -189,6 +198,13 @@ const getMyMedicines = async ({
           name: true,
         },
       },
+      reviews: {
+        select: {
+          customerId: true,
+          rating: true,
+          comment: true,
+        },
+      },
     },
     orderBy: {
       [sortBy]: sortOrder,
@@ -230,6 +246,14 @@ const getMedicineById = async (id: string) => {
         select: {
           id: true,
           name: true,
+        },
+      },
+
+      reviews: {
+        select: {
+          customerId: true,
+          rating: true,
+          comment: true,
         },
       },
     },
