@@ -4,14 +4,6 @@ import { OrderController } from "./order.controller";
 
 const router = express.Router();
 
-// createOrder,            //*cus: post a order----- "/"
-// getMyAllOrder,          //*cus: get my all orders----- "/my-orders"
-// getOrderById,           //*cus: get my order by id(details)------ "/my-orders/:id"
-// cancelMyOrder,          //*cus: patch my order(update status => cancel order)---"/my-orders/cancel/:id"
-// getMyMedicinesOrder,    //*sel: get my all Medicines orders--- "/seller/my-medicine-orders"
-// updateMyMedicinesOrder, //*sel: patch my Medic ord(upd status)---"/seller/update-my-medicine-orders/:id"
-// getAllOrders,           //*admin: get all orders------------- "/admin/orders"
-
 router.post("/", auth(UserRole.CUSTOMER), OrderController.createOrder);
 router.get(
   "/my-orders",

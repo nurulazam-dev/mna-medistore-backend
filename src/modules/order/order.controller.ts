@@ -3,30 +3,20 @@ import { UserRole } from "../../middleware/auth";
 import { orderService } from "./order.service";
 import { OrderStatus } from "../../../generated/prisma/enums";
 import paginationHelper from "../../helpers/paginationHelper";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 
 const createOrder = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
     if (user.role !== UserRole.CUSTOMER) {
-      return res.status(403).json({
-        success: false,
-        message: "You don't have access to order!",
-      });
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
-
     if (user.status !== "ACTIVE") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account isn't active!",
-      });
+      throw new ApiErrorHandler(403, "Your account isn't active!");
     }
 
     const result = await orderService.createOrder(user.id, req.body);
@@ -50,17 +40,10 @@ const getMyAllOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
     if (user.role !== UserRole.CUSTOMER) {
-      return res.status(403).json({
-        success: false,
-        message: "You don't have access to get orders!",
-      });
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const result = await orderService.getMyAllOrder(user.id);
@@ -84,15 +67,12 @@ const getOrderById = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
 
     const { id } = req.params;
     if (!id) {
-      throw new Error("Order Id is required!");
+      throw new ApiErrorHandler(404, "Order Id is required!");
     }
 
     const result = await orderService.getOrderById(id as string, user.id);
@@ -116,17 +96,10 @@ const cancelMyOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
     if (user.role !== UserRole.CUSTOMER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only customer cancel his own order!",
-      });
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const { id } = req.params;
@@ -151,17 +124,10 @@ const getMyMedicinesOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
     if (user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can get his own medicine order!",
-      });
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const result = await orderService.getMyMedicinesOrder(user.id);
@@ -185,17 +151,10 @@ const updateMyMedicinesOrder = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
     if (user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can updated own medicine order!",
-      });
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const result = await orderService.updateMyMedicinesOrder(
@@ -233,17 +192,10 @@ const getAllOrders = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
     if (user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can access the orders!",
-      });
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const result = await orderService.getAllOrders({

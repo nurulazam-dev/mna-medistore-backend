@@ -2,30 +2,24 @@ import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { medicineService } from "./medicine.service";
 import paginationHelper from "../../helpers/paginationHelper";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 
 const createMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can access created medicine!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
+    if (user.role !== UserRole.SELLER) {
+      throw new ApiErrorHandler(403, "You don't have access!");
+    }
     if (user.status !== "ACTIVE") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account isn't active!",
-      });
+      throw new ApiErrorHandler(403, "Your account isn't active!");
     }
 
     if (!user.emailVerified) {
-      return res.status(403).json({
-        success: false,
-        message: "You aren't verified Seller!",
-      });
+      throw new ApiErrorHandler(403, "You aren't verified Seller!");
     }
 
     const result = await medicineService.createMedicine(req.body);
@@ -101,11 +95,11 @@ const getMyMedicines = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can access own medicines.",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
+    }
+    if (user.role !== UserRole.SELLER) {
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const { search } = req.query;
@@ -160,9 +154,11 @@ const getMyMedicines = async (req: Request, res: Response) => {
 const getMedicineById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
     if (!id) {
-      throw new Error("Medicine Id is required!");
+      throw new ApiErrorHandler(404, "Medicine Id is required!");
     }
+
     const result = await medicineService.getMedicineById(id as string);
 
     return res.status(200).json({
@@ -183,11 +179,11 @@ const updateMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can updated own medicine!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
+    }
+    if (user.role !== UserRole.SELLER) {
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const { id } = req.params;
@@ -216,11 +212,11 @@ const deleteMedicine = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.SELLER) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only seller can deleted own medicine!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
+    }
+    if (user.role !== UserRole.SELLER) {
+      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const { id } = req.params;

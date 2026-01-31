@@ -1,5 +1,6 @@
 import { Medicine } from "../../../generated/prisma/client";
 import { MedicineWhereInput } from "../../../generated/prisma/models";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 import { prisma } from "../../lib/prisma";
 
 const createMedicine = async (data: Medicine) => {
@@ -277,7 +278,7 @@ const updateMedicine = async (
   });
 
   if (medicineData.sellerId !== sellerId) {
-    throw new Error("You aren't seller of this medicine!");
+    throw new ApiErrorHandler(404, "You aren't seller of this medicine!");
   }
 
   const result = await prisma.medicine.update({
@@ -301,7 +302,7 @@ const deleteMedicine = async (id: string, sellerId: string) => {
   });
 
   if (medicineData.sellerId !== sellerId) {
-    throw new Error("You aren't seller of this medicine!");
+    throw new ApiErrorHandler(404, "You aren't seller of this medicine!");
   }
 
   return await prisma.medicine.delete({
