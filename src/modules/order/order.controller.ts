@@ -4,8 +4,9 @@ import { orderService } from "./order.service";
 import { OrderStatus } from "../../../generated/prisma/enums";
 import paginationHelper from "../../helpers/paginationHelper";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
+import catchAsync from "../../helpers/catchAsync";
 
-const createOrder = async (req: Request, res: Response) => {
+const createOrder = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -33,9 +34,9 @@ const createOrder = async (req: Request, res: Response) => {
       message: err.message || "Order placed fail!",
     });
   }
-};
+});
 
-const getMyAllOrder = async (req: Request, res: Response) => {
+const getMyAllOrder = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -60,9 +61,9 @@ const getMyAllOrder = async (req: Request, res: Response) => {
       message: err.message || "My all orders fetched fail!",
     });
   }
-};
+});
 
-const getOrderById = async (req: Request, res: Response) => {
+const getOrderById = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -89,9 +90,9 @@ const getOrderById = async (req: Request, res: Response) => {
       message: err.message || "Fail to get order",
     });
   }
-};
+});
 
-const cancelMyOrder = async (req: Request, res: Response) => {
+const cancelMyOrder = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -117,9 +118,9 @@ const cancelMyOrder = async (req: Request, res: Response) => {
       message: err.message || "Fail to Order cancelled",
     });
   }
-};
+});
 
-const getMyMedicinesOrder = async (req: Request, res: Response) => {
+const getMyMedicinesOrder = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -143,40 +144,42 @@ const getMyMedicinesOrder = async (req: Request, res: Response) => {
       message: err.message || "Internal Server Error",
     });
   }
-};
+});
 
-const updateMyMedicinesOrder = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const user = req.user;
+const updateMyMedicinesOrder = catchAsync(
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const user = req.user;
 
-    if (!user) {
-      throw new ApiErrorHandler(401, "You are unauthorize!");
+      if (!user) {
+        throw new ApiErrorHandler(401, "You are unauthorize!");
+      }
+      if (user.role !== UserRole.SELLER) {
+        throw new ApiErrorHandler(403, "You don't have access!");
+      }
+
+      const result = await orderService.updateMyMedicinesOrder(
+        id as string,
+        req.body.status,
+        user.id,
+      );
+      res.status(200).json({
+        success: true,
+        message: "Order status updated",
+        data: result,
+      });
+    } catch (err: any) {
+      console.error(err);
+      return res.status(404).json({
+        success: false,
+        message: err.message || "Order status updated fail",
+      });
     }
-    if (user.role !== UserRole.SELLER) {
-      throw new ApiErrorHandler(403, "You don't have access!");
-    }
+  },
+);
 
-    const result = await orderService.updateMyMedicinesOrder(
-      id as string,
-      req.body.status,
-      user.id,
-    );
-    res.status(200).json({
-      success: true,
-      message: "Order status updated",
-      data: result,
-    });
-  } catch (err: any) {
-    console.error(err);
-    return res.status(404).json({
-      success: false,
-      message: err.message || "Order status updated fail",
-    });
-  }
-};
-
-const getAllOrders = async (req: Request, res: Response) => {
+const getAllOrders = catchAsync(async (req: Request, res: Response) => {
   try {
     const status = req.query.status as OrderStatus | undefined;
     const sellerId = req.query.sellerId as string | undefined;
@@ -224,7 +227,7 @@ const getAllOrders = async (req: Request, res: Response) => {
       message: err.message || "Order fetch fail",
     });
   }
-};
+});
 
 export const OrderController = {
   createOrder,

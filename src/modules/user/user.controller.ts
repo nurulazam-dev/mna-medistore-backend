@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { userService } from "./user.service";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
+import catchAsync from "../../helpers/catchAsync";
 
-const getAllUser = async (req: Request, res: Response) => {
+const getAllUser = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -31,9 +32,9 @@ const getAllUser = async (req: Request, res: Response) => {
       message: err.message || "Get users fail!",
     });
   }
-};
+});
 
-const updateUserStatus = async (req: Request, res: Response) => {
+const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -63,9 +64,9 @@ const updateUserStatus = async (req: Request, res: Response) => {
       message: err.message || "User updated fail!",
     });
   }
-};
+});
 
-const updateProfile = async (req: Request, res: Response) => {
+const updateProfile = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -94,7 +95,7 @@ const updateProfile = async (req: Request, res: Response) => {
       message: err.message || "Profile updated fail!",
     });
   }
-};
+});
 
 export const UserController = {
   getAllUser,

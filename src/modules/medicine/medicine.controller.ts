@@ -3,8 +3,9 @@ import { UserRole } from "../../middleware/auth";
 import { medicineService } from "./medicine.service";
 import paginationHelper from "../../helpers/paginationHelper";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
+import catchAsync from "../../helpers/catchAsync";
 
-const createMedicine = async (req: Request, res: Response) => {
+const createMedicine = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -36,9 +37,9 @@ const createMedicine = async (req: Request, res: Response) => {
       message: err.message || "Medicine created fail!",
     });
   }
-};
+});
 
-const getAllMedicine = async (req: Request, res: Response) => {
+const getAllMedicine = catchAsync(async (req: Request, res: Response) => {
   try {
     const { search } = req.query;
 
@@ -89,9 +90,9 @@ const getAllMedicine = async (req: Request, res: Response) => {
       message: err.message || "Medicine fetch fail!",
     });
   }
-};
+});
 
-const getMyMedicines = async (req: Request, res: Response) => {
+const getMyMedicines = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -149,9 +150,9 @@ const getMyMedicines = async (req: Request, res: Response) => {
       message: err.message || "My medicine fetch fail!",
     });
   }
-};
+});
 
-const getMedicineById = async (req: Request, res: Response) => {
+const getMedicineById = catchAsync(async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -173,9 +174,9 @@ const getMedicineById = async (req: Request, res: Response) => {
       message: err.message || "Get Medicine fail!",
     });
   }
-};
+});
 
-const updateMedicine = async (req: Request, res: Response) => {
+const updateMedicine = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -206,9 +207,9 @@ const updateMedicine = async (req: Request, res: Response) => {
       message: err.message || "Medicine updated fail!",
     });
   }
-};
+});
 
-const deleteMedicine = async (req: Request, res: Response) => {
+const deleteMedicine = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -235,7 +236,7 @@ const deleteMedicine = async (req: Request, res: Response) => {
       message: err.message || "Medicine deleted fail!",
     });
   }
-};
+});
 
 export const MedicineController = {
   createMedicine,

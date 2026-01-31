@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { reviewService } from "./review.service";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
+import catchAsync from "../../helpers/catchAsync";
 
-const createReview = async (req: Request, res: Response) => {
+const createReview = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -31,7 +32,7 @@ const createReview = async (req: Request, res: Response) => {
       message: err.message || "Review added fail!",
     });
   }
-};
+});
 
 export const ReviewController = {
   createReview,

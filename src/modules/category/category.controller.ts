@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { categoryService } from "./category.service";
 import { UserRole } from "../../middleware/auth";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
+import catchAsync from "../../helpers/catchAsync";
 
-const createCategory = async (req: Request, res: Response) => {
+const createCategory = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -29,9 +30,9 @@ const createCategory = async (req: Request, res: Response) => {
       message: err.message || "Category created fail!",
     });
   }
-};
+});
 
-const getAllCategory = async (req: Request, res: Response) => {
+const getAllCategory = catchAsync(async (req: Request, res: Response) => {
   try {
     const result = await categoryService.getAllCategory();
 
@@ -47,9 +48,9 @@ const getAllCategory = async (req: Request, res: Response) => {
       message: err.message || "Category fetch fail!",
     });
   }
-};
+});
 
-const getCategoryById = async (req: Request, res: Response) => {
+const getCategoryById = catchAsync(async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -70,9 +71,9 @@ const getCategoryById = async (req: Request, res: Response) => {
       message: err.message || "Get Category fail!",
     });
   }
-};
+});
 
-const updateCategory = async (req: Request, res: Response) => {
+const updateCategory = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -100,9 +101,9 @@ const updateCategory = async (req: Request, res: Response) => {
       message: err.message || "Category updated fail!",
     });
   }
-};
+});
 
-const deleteCategory = async (req: Request, res: Response) => {
+const deleteCategory = catchAsync(async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
@@ -130,7 +131,7 @@ const deleteCategory = async (req: Request, res: Response) => {
       message: err.message || "Category deleted fail!",
     });
   }
-};
+});
 
 export const CategoryController = {
   createCategory,
