@@ -1,23 +1,20 @@
 import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { userService } from "./user.service";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 
 const getAllUser = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can access users!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
+    if (user.role !== UserRole.ADMIN) {
+      throw new ApiErrorHandler(403, "You don't have access!");
+    }
     if (user.status !== "ACTIVE") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account isn't active!",
-      });
+      throw new ApiErrorHandler(403, "Your account isn't active!");
     }
 
     const result = await userService.getAllUser();
@@ -40,18 +37,14 @@ const updateUserStatus = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden! Only admin can access updated user!",
-      });
+    if (!user) {
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
+    if (user.role !== UserRole.ADMIN) {
+      throw new ApiErrorHandler(403, "You don't have access!");
+    }
     if (user.status !== "ACTIVE") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account isn't active!",
-      });
+      throw new ApiErrorHandler(403, "Your account isn't active!");
     }
 
     const { id } = req.params;
@@ -77,17 +70,11 @@ const updateProfile = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
 
     if (user.status !== "ACTIVE") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account isn't active. You can't update profile!",
-      });
+      throw new ApiErrorHandler(403, "Your account isn't active!");
     }
 
     const result = await userService.updateProfile(
@@ -112,4 +99,5 @@ const updateProfile = async (req: Request, res: Response) => {
 export const UserController = {
   getAllUser,
   updateUserStatus,
+  updateProfile,
 };

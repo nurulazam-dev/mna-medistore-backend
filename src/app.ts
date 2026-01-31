@@ -8,6 +8,7 @@ import { medicineRouter } from "./modules/medicine/medicine.router";
 import { userRouter } from "./modules/user/user.router";
 import { orderRouter } from "./modules/order/order.router";
 import { reviewRouter } from "./modules/review/review.router";
+import globalErrorHandler from "./middleware/globalErrorHandler";
 
 const app: Application = express();
 
@@ -33,5 +34,6 @@ app.get("/", (req, res) => {
 });
 
 app.use(notFound);
+app.use(globalErrorHandler);
 
 export default app;

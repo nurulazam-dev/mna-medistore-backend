@@ -1,4 +1,5 @@
 import { OrderStatus, PaymentMethod } from "../../../generated/prisma/client";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 import { prisma } from "../../lib/prisma";
 
 const createOrder = async (userId: string, payload: any) => {
@@ -25,7 +26,7 @@ const createOrder = async (userId: string, payload: any) => {
       });
 
       if (!medicine) {
-        throw new Error("Medicine not found!");
+        throw new ApiErrorHandler(404, "Medicine not found!");
       }
 
       const unitPrice = Number(medicine.price);
@@ -33,7 +34,10 @@ const createOrder = async (userId: string, payload: any) => {
       const availableStock = Number(medicine.stock || 0);
 
       if (quantity > availableStock) {
-        throw new Error(`You can't order more than available stock!`);
+        throw new ApiErrorHandler(
+          404,
+          `You can't order more than available stock!`,
+        );
       }
 
       orderItemsData.push({
@@ -133,15 +137,15 @@ const cancelMyOrder = async (orderId: string, userId: string) => {
     });
 
     if (!orderData) {
-      throw new Error("Order not found!");
+      throw new ApiErrorHandler(404, "Order not found!");
     }
 
     if (orderData.customerId !== userId) {
-      throw new Error("You aren't customer of this order!");
+      throw new ApiErrorHandler(404, "You aren't customer of this order!");
     }
 
     if (orderData.status !== OrderStatus.PLACED) {
-      throw new Error("You can't cancel this order!");
+      throw new ApiErrorHandler(404, "You can't cancel this order!");
     }
 
     for (const item of orderData.items) {
@@ -208,7 +212,7 @@ const updateMyMedicinesOrder = async (
   });
 
   if (orderItem.sellerId !== userId) {
-    throw new Error("You aren't seller of this medicine order!");
+    throw new ApiErrorHandler(404, "You aren't seller of this medicine order!");
   }
 
   return await prisma.order.update({

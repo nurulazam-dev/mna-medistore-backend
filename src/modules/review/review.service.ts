@@ -1,4 +1,5 @@
 import { OrderStatus } from "../../../generated/prisma/enums";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 import { prisma } from "../../lib/prisma";
 
 const createReview = async (userId: string, payload: any) => {
@@ -17,7 +18,8 @@ const createReview = async (userId: string, payload: any) => {
   });
 
   if (!hasOrdered) {
-    throw new Error(
+    throw new ApiErrorHandler(
+      403,
       "You can only review medicine that you have successfully purchased!",
     );
   }

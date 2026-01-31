@@ -1,30 +1,20 @@
 import { Request, Response } from "express";
 import { UserRole } from "../../middleware/auth";
 import { reviewService } from "./review.service";
+import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 
 const createReview = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are unauthorize!",
-      });
+      throw new ApiErrorHandler(401, "You are unauthorize!");
     }
-
     if (user.role !== UserRole.CUSTOMER) {
-      return res.status(403).json({
-        success: false,
-        message: "You don't have access to create review!",
-      });
+      throw new ApiErrorHandler(403, "You don't have access to create review!");
     }
-
     if (user.status !== "ACTIVE") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account isn't active!",
-      });
+      throw new ApiErrorHandler(403, "Your account isn't active!");
     }
 
     const result = await reviewService.createReview(user.id, req.body);
