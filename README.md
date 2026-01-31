@@ -19,12 +19,6 @@ npm run dev
 | Node.js + Express.js  | REST API |
 | Postgres + Prisma ORM | Database |
 
-### Deployment
-
-| Service | Purpose            |
-| ------- | ------------------ |
-| Vercel  | Backend deployment |
-
 ## Order:
 
 | Service                | Access   | API Endpoint                            | Purpose                                                     |
@@ -36,3 +30,9 @@ npm run dev
 | getMyMedicinesOrder    | seller   | "/seller/my-medicine-orders"            | seller get his all Medicines orders                         |
 | updateMyMedicinesOrder | seller   | "/seller/update-my-medicine-orders/:id" | seller patch his Medicine order(update => status)           |
 | getAllOrders           | admin    | "/admin/orders"                         | admin get all orders                                        |
+
+### Deployment
+
+| Service | Purpose            |
+| ------- | ------------------ |
+| Vercel  | Backend deployment |

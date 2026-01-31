@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { UserRole } from "../../middleware/auth";
 import { userService } from "./user.service";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 import catchAsync from "../../helpers/catchAsync";
@@ -11,9 +10,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-  if (user.role !== UserRole.ADMIN) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
+
   if (user.status !== "ACTIVE") {
     throw new ApiErrorHandler(403, "Your account isn't active!");
   }
@@ -34,9 +31,7 @@ const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-  if (user.role !== UserRole.ADMIN) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
+
   if (user.status !== "ACTIVE") {
     throw new ApiErrorHandler(403, "Your account isn't active!");
   }

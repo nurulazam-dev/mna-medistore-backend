@@ -1,21 +1,10 @@
 import { Request, Response } from "express";
 import { categoryService } from "./category.service";
-import { UserRole } from "../../middleware/auth";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 import catchAsync from "../../helpers/catchAsync";
 import sendResponse from "../../helpers/sendResponse";
 
 const createCategory = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
-
-  if (!user) {
-    throw new ApiErrorHandler(401, "You are unauthorize!");
-  }
-
-  if (user.role !== UserRole.ADMIN) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
-
   const result = await categoryService.createCategory(req.body);
 
   sendResponse(res, {
@@ -54,16 +43,6 @@ const getCategoryById = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateCategory = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
-
-  if (!user) {
-    throw new ApiErrorHandler(401, "You are unauthorize!");
-  }
-
-  if (user.role !== UserRole.ADMIN) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
-
   const { id } = req.params;
 
   const result = await categoryService.updateCategory(id as string, req.body);
@@ -77,16 +56,6 @@ const updateCategory = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteCategory = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
-
-  if (!user) {
-    throw new ApiErrorHandler(401, "You are unauthorize!");
-  }
-
-  if (user.role !== UserRole.ADMIN) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
-
   const { id } = req.params;
 
   const result = await categoryService.deleteCategory(id as string);

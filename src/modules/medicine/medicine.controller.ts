@@ -12,9 +12,7 @@ const createMedicine = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-  if (user.role !== UserRole.SELLER) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
+
   if (user.status !== "ACTIVE") {
     throw new ApiErrorHandler(403, "Your account isn't active!");
   }
@@ -151,9 +149,6 @@ const updateMedicine = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-  if (user.role !== UserRole.SELLER) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
 
   const { id } = req.params;
 
@@ -176,9 +171,6 @@ const deleteMedicine = catchAsync(async (req: Request, res: Response) => {
 
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
-  }
-  if (user.role !== UserRole.SELLER) {
-    throw new ApiErrorHandler(403, "You don't have access!");
   }
 
   const { id } = req.params;

@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { UserRole } from "../../middleware/auth";
 import { orderService } from "./order.service";
 import { OrderStatus } from "../../../generated/prisma/enums";
 import paginationHelper from "../../helpers/paginationHelper";
@@ -13,9 +12,7 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-  if (user.role !== UserRole.CUSTOMER) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
+
   if (user.status !== "ACTIVE") {
     throw new ApiErrorHandler(403, "Your account isn't active!");
   }
@@ -35,9 +32,6 @@ const getMyAllOrder = catchAsync(async (req: Request, res: Response) => {
 
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
-  }
-  if (user.role !== UserRole.CUSTOMER) {
-    throw new ApiErrorHandler(403, "You don't have access!");
   }
 
   const result = await orderService.getMyAllOrder(user.id);
@@ -77,15 +71,12 @@ const cancelMyOrder = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
   }
-  if (user.role !== UserRole.CUSTOMER) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
 
   const { id } = req.params;
   const result = await orderService.cancelMyOrder(id as string, user.id);
 
   sendResponse(res, {
-    statusCode: 204,
+    statusCode: 200,
     success: true,
     message: "Order cancelled",
     data: result,
@@ -97,9 +88,6 @@ const getMyMedicinesOrder = catchAsync(async (req: Request, res: Response) => {
 
   if (!user) {
     throw new ApiErrorHandler(401, "You are unauthorize!");
-  }
-  if (user.role !== UserRole.SELLER) {
-    throw new ApiErrorHandler(403, "You don't have access!");
   }
 
   const result = await orderService.getMyMedicinesOrder(user.id);
@@ -119,9 +107,6 @@ const updateMyMedicinesOrder = catchAsync(
 
     if (!user) {
       throw new ApiErrorHandler(401, "You are unauthorize!");
-    }
-    if (user.role !== UserRole.SELLER) {
-      throw new ApiErrorHandler(403, "You don't have access!");
     }
 
     const result = await orderService.updateMyMedicinesOrder(
@@ -148,15 +133,6 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
   const manufacturer = req.query.manufacturer as string | undefined;
 
   const { page, limit, skip, sortBy, sortOrder } = paginationHelper(req.query);
-
-  const user = req.user;
-
-  if (!user) {
-    throw new ApiErrorHandler(401, "You are unauthorize!");
-  }
-  if (user.role !== UserRole.ADMIN) {
-    throw new ApiErrorHandler(403, "You don't have access!");
-  }
 
   const result = await orderService.getAllOrders({
     status,
