@@ -33,7 +33,7 @@ const createOrder = async (userId: string, payload: any) => {
       const availableStock = Number(medicine.stock || 0);
 
       if (quantity > availableStock) {
-        throw new Error(`You can't order more than stock!`);
+        throw new Error(`You can't order more than available stock!`);
       }
 
       orderItemsData.push({
