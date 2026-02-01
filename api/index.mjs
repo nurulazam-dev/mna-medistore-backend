@@ -23,30 +23,35 @@ import { fileURLToPath } from "url";
 // generated/prisma/internal/class.ts
 import * as runtime from "@prisma/client/runtime/client";
 var config = {
-  "previewFeatures": [],
-  "clientVersion": "7.3.0",
-  "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
-  "activeProvider": "postgresql",
-  "inlineSchema": 'model User {\n  id            String   @id\n  name          String?\n  email         String\n  emailVerified Boolean  @default(false)\n  image         String?\n  role          String?  @default("CUSTOMER")\n  phone         String?\n  status        String?  @default("ACTIVE")\n  address       String?\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n\n  medicines  Medicine[]\n  orders     Order[]\n  reviews    Review[]\n  orderItems OrderItem[]\n\n  sessions Session[]\n  accounts Account[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nmodel Category {\n  id        String   @id @default(uuid())\n  name      String   @unique @db.VarChar(100)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  medicines Medicine[]\n\n  @@map("categories")\n}\n\nmodel Medicine {\n  id           String   @id @default(uuid())\n  name         String   @unique @db.VarChar(150)\n  sellerId     String\n  seller       User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)\n  categoryId   String\n  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)\n  description  String   @db.Text\n  image        String?\n  price        Decimal  @db.Decimal(10, 2)\n  stock        Int?\n  manufacturer String   @db.VarChar(150)\n  isActive     Boolean? @default(true)\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n\n  orderItems OrderItem[]\n  reviews    Review[]\n\n  @@index([sellerId])\n  @@index([categoryId])\n  @@map("medicines")\n}\n\nmodel Order {\n  id               String        @id @default(uuid())\n  customerId       String\n  customer         User          @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  status           OrderStatus   @default(PLACED)\n  payment_method   PaymentMethod @default(CASH_ON_DELIVERY)\n  shipping_address String        @db.Text\n  total_amount     Decimal       @db.Decimal(10, 2)\n  createdAt        DateTime      @default(now())\n  updatedAt        DateTime      @updatedAt\n\n  items OrderItem[]\n\n  @@index([customerId])\n  @@map("orders")\n}\n\nenum OrderStatus {\n  PLACED\n  PROCESSING\n  SHIPPED\n  DELIVERED\n  CANCELLED\n}\n\nenum PaymentMethod {\n  CASH_ON_DELIVERY\n}\n\nmodel OrderItem {\n  id         String   @id @default(uuid())\n  orderId    String\n  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)\n  medicineId String\n  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  sellerId   String\n  seller     User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)\n  quantity   Int\n  unit_price Decimal  @db.Decimal(10, 2)\n  sub_total  Decimal  @db.Decimal(10, 2)\n\n  @@index([orderId])\n  @@index([sellerId])\n  @@index([medicineId])\n  @@map("orderItems")\n}\n\nmodel Review {\n  id         String   @id @default(uuid())\n  medicineId String\n  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  customerId String\n  customer   User     @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  rating     Int\n  comment    String   @db.Text\n  createdAt  DateTime @default(now())\n\n  @@index([medicineId])\n  @@index([customerId])\n  @@map("reviews")\n}\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../../generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n',
-  "runtimeDataModel": {
-    "models": {},
-    "enums": {},
-    "types": {}
-  }
+  previewFeatures: [],
+  clientVersion: "7.3.0",
+  engineVersion: "9d6ad21cbbceab97458517b147a6a09ff43aa735",
+  activeProvider: "postgresql",
+  inlineSchema:
+    'model User {\n  id            String   @id\n  name          String?\n  email         String\n  emailVerified Boolean  @default(false)\n  image         String?\n  role          String?  @default("CUSTOMER")\n  phone         String?\n  status        String?  @default("ACTIVE")\n  address       String?\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n\n  medicines  Medicine[]\n  orders     Order[]\n  reviews    Review[]\n  orderItems OrderItem[]\n\n  sessions Session[]\n  accounts Account[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nmodel Category {\n  id        String   @id @default(uuid())\n  name      String   @unique @db.VarChar(100)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  medicines Medicine[]\n\n  @@map("categories")\n}\n\nmodel Medicine {\n  id           String   @id @default(uuid())\n  name         String   @unique @db.VarChar(150)\n  sellerId     String\n  seller       User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)\n  categoryId   String\n  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)\n  description  String   @db.Text\n  image        String?\n  price        Decimal  @db.Decimal(10, 2)\n  stock        Int?\n  manufacturer String   @db.VarChar(150)\n  isActive     Boolean? @default(true)\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n\n  orderItems OrderItem[]\n  reviews    Review[]\n\n  @@index([sellerId])\n  @@index([categoryId])\n  @@map("medicines")\n}\n\nmodel Order {\n  id               String        @id @default(uuid())\n  customerId       String\n  customer         User          @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  status           OrderStatus   @default(PLACED)\n  payment_method   PaymentMethod @default(CASH_ON_DELIVERY)\n  shipping_address String        @db.Text\n  total_amount     Decimal       @db.Decimal(10, 2)\n  createdAt        DateTime      @default(now())\n  updatedAt        DateTime      @updatedAt\n\n  items OrderItem[]\n\n  @@index([customerId])\n  @@map("orders")\n}\n\nenum OrderStatus {\n  PLACED\n  PROCESSING\n  SHIPPED\n  DELIVERED\n  CANCELLED\n}\n\nenum PaymentMethod {\n  CASH_ON_DELIVERY\n}\n\nmodel OrderItem {\n  id         String   @id @default(uuid())\n  orderId    String\n  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)\n  medicineId String\n  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  sellerId   String\n  seller     User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)\n  quantity   Int\n  unit_price Decimal  @db.Decimal(10, 2)\n  sub_total  Decimal  @db.Decimal(10, 2)\n\n  @@index([orderId])\n  @@index([sellerId])\n  @@index([medicineId])\n  @@map("orderItems")\n}\n\nmodel Review {\n  id         String   @id @default(uuid())\n  medicineId String\n  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  customerId String\n  customer   User     @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  rating     Int\n  comment    String   @db.Text\n  createdAt  DateTime @default(now())\n\n  @@index([medicineId])\n  @@index([customerId])\n  @@map("reviews")\n}\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../../generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n',
+  runtimeDataModel: {
+    models: {},
+    enums: {},
+    types: {},
+  },
 };
-config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"role","kind":"scalar","type":"String"},{"name":"phone","kind":"scalar","type":"String"},{"name":"status","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"MedicineToUser"},{"name":"orders","kind":"object","type":"Order","relationName":"OrderToUser"},{"name":"reviews","kind":"object","type":"Review","relationName":"ReviewToUser"},{"name":"orderItems","kind":"object","type":"OrderItem","relationName":"OrderItemToUser"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"CategoryToMedicine"}],"dbName":"categories"},"Medicine":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"sellerId","kind":"scalar","type":"String"},{"name":"seller","kind":"object","type":"User","relationName":"MedicineToUser"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"category","kind":"object","type":"Category","relationName":"CategoryToMedicine"},{"name":"description","kind":"scalar","type":"String"},{"name":"image","kind":"scalar","type":"String"},{"name":"price","kind":"scalar","type":"Decimal"},{"name":"stock","kind":"scalar","type":"Int"},{"name":"manufacturer","kind":"scalar","type":"String"},{"name":"isActive","kind":"scalar","type":"Boolean"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"orderItems","kind":"object","type":"OrderItem","relationName":"MedicineToOrderItem"},{"name":"reviews","kind":"object","type":"Review","relationName":"MedicineToReview"}],"dbName":"medicines"},"Order":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"customerId","kind":"scalar","type":"String"},{"name":"customer","kind":"object","type":"User","relationName":"OrderToUser"},{"name":"status","kind":"enum","type":"OrderStatus"},{"name":"payment_method","kind":"enum","type":"PaymentMethod"},{"name":"shipping_address","kind":"scalar","type":"String"},{"name":"total_amount","kind":"scalar","type":"Decimal"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"items","kind":"object","type":"OrderItem","relationName":"OrderToOrderItem"}],"dbName":"orders"},"OrderItem":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"order","kind":"object","type":"Order","relationName":"OrderToOrderItem"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicine","kind":"object","type":"Medicine","relationName":"MedicineToOrderItem"},{"name":"sellerId","kind":"scalar","type":"String"},{"name":"seller","kind":"object","type":"User","relationName":"OrderItemToUser"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"unit_price","kind":"scalar","type":"Decimal"},{"name":"sub_total","kind":"scalar","type":"Decimal"}],"dbName":"orderItems"},"Review":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicine","kind":"object","type":"Medicine","relationName":"MedicineToReview"},{"name":"customerId","kind":"scalar","type":"String"},{"name":"customer","kind":"object","type":"User","relationName":"ReviewToUser"},{"name":"rating","kind":"scalar","type":"Int"},{"name":"comment","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"}],"dbName":"reviews"}},"enums":{},"types":{}}');
+config.runtimeDataModel = JSON.parse(
+  '{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"role","kind":"scalar","type":"String"},{"name":"phone","kind":"scalar","type":"String"},{"name":"status","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"MedicineToUser"},{"name":"orders","kind":"object","type":"Order","relationName":"OrderToUser"},{"name":"reviews","kind":"object","type":"Review","relationName":"ReviewToUser"},{"name":"orderItems","kind":"object","type":"OrderItem","relationName":"OrderItemToUser"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"CategoryToMedicine"}],"dbName":"categories"},"Medicine":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"sellerId","kind":"scalar","type":"String"},{"name":"seller","kind":"object","type":"User","relationName":"MedicineToUser"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"category","kind":"object","type":"Category","relationName":"CategoryToMedicine"},{"name":"description","kind":"scalar","type":"String"},{"name":"image","kind":"scalar","type":"String"},{"name":"price","kind":"scalar","type":"Decimal"},{"name":"stock","kind":"scalar","type":"Int"},{"name":"manufacturer","kind":"scalar","type":"String"},{"name":"isActive","kind":"scalar","type":"Boolean"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"orderItems","kind":"object","type":"OrderItem","relationName":"MedicineToOrderItem"},{"name":"reviews","kind":"object","type":"Review","relationName":"MedicineToReview"}],"dbName":"medicines"},"Order":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"customerId","kind":"scalar","type":"String"},{"name":"customer","kind":"object","type":"User","relationName":"OrderToUser"},{"name":"status","kind":"enum","type":"OrderStatus"},{"name":"payment_method","kind":"enum","type":"PaymentMethod"},{"name":"shipping_address","kind":"scalar","type":"String"},{"name":"total_amount","kind":"scalar","type":"Decimal"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"items","kind":"object","type":"OrderItem","relationName":"OrderToOrderItem"}],"dbName":"orders"},"OrderItem":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"order","kind":"object","type":"Order","relationName":"OrderToOrderItem"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicine","kind":"object","type":"Medicine","relationName":"MedicineToOrderItem"},{"name":"sellerId","kind":"scalar","type":"String"},{"name":"seller","kind":"object","type":"User","relationName":"OrderItemToUser"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"unit_price","kind":"scalar","type":"Decimal"},{"name":"sub_total","kind":"scalar","type":"Decimal"}],"dbName":"orderItems"},"Review":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicine","kind":"object","type":"Medicine","relationName":"MedicineToReview"},{"name":"customerId","kind":"scalar","type":"String"},{"name":"customer","kind":"object","type":"User","relationName":"ReviewToUser"},{"name":"rating","kind":"scalar","type":"Int"},{"name":"comment","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"}],"dbName":"reviews"}},"enums":{},"types":{}}',
+);
 async function decodeBase64AsWasm(wasmBase64) {
   const { Buffer: Buffer2 } = await import("buffer");
   const wasmArray = Buffer2.from(wasmBase64, "base64");
   return new WebAssembly.Module(wasmArray);
 }
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
+  getRuntime: async () =>
+    await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs");
+    const { wasm } =
+      await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs");
     return await decodeBase64AsWasm(wasm);
   },
-  importName: "./query_compiler_fast_bg.js"
+  importName: "./query_compiler_fast_bg.js",
 };
 function getPrismaClientClass() {
   return runtime.getPrismaClient(config);
@@ -86,7 +91,7 @@ __export(prismaNamespace_exports, {
   join: () => join2,
   prismaVersion: () => prismaVersion,
   raw: () => raw2,
-  sql: () => sql
+  sql: () => sql,
 });
 import * as runtime2 from "@prisma/client/runtime/client";
 var PrismaClientKnownRequestError2 = runtime2.PrismaClientKnownRequestError;
@@ -103,12 +108,12 @@ var Decimal2 = runtime2.Decimal;
 var getExtensionContext = runtime2.Extensions.getExtensionContext;
 var prismaVersion = {
   client: "7.3.0",
-  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
+  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735",
 };
 var NullTypes2 = {
   DbNull: runtime2.NullTypes.DbNull,
   JsonNull: runtime2.NullTypes.JsonNull,
-  AnyNull: runtime2.NullTypes.AnyNull
+  AnyNull: runtime2.NullTypes.AnyNull,
 };
 var DbNull2 = runtime2.DbNull;
 var JsonNull2 = runtime2.JsonNull;
@@ -122,13 +127,13 @@ var ModelName = {
   Medicine: "Medicine",
   Order: "Order",
   OrderItem: "OrderItem",
-  Review: "Review"
+  Review: "Review",
 };
 var TransactionIsolationLevel = runtime2.makeStrictEnum({
   ReadUncommitted: "ReadUncommitted",
   ReadCommitted: "ReadCommitted",
   RepeatableRead: "RepeatableRead",
-  Serializable: "Serializable"
+  Serializable: "Serializable",
 });
 var UserScalarFieldEnum = {
   id: "id",
@@ -141,7 +146,7 @@ var UserScalarFieldEnum = {
   status: "status",
   address: "address",
   createdAt: "createdAt",
-  updatedAt: "updatedAt"
+  updatedAt: "updatedAt",
 };
 var SessionScalarFieldEnum = {
   id: "id",
@@ -151,7 +156,7 @@ var SessionScalarFieldEnum = {
   updatedAt: "updatedAt",
   ipAddress: "ipAddress",
   userAgent: "userAgent",
-  userId: "userId"
+  userId: "userId",
 };
 var AccountScalarFieldEnum = {
   id: "id",
@@ -166,7 +171,7 @@ var AccountScalarFieldEnum = {
   scope: "scope",
   password: "password",
   createdAt: "createdAt",
-  updatedAt: "updatedAt"
+  updatedAt: "updatedAt",
 };
 var VerificationScalarFieldEnum = {
   id: "id",
@@ -174,13 +179,13 @@ var VerificationScalarFieldEnum = {
   value: "value",
   expiresAt: "expiresAt",
   createdAt: "createdAt",
-  updatedAt: "updatedAt"
+  updatedAt: "updatedAt",
 };
 var CategoryScalarFieldEnum = {
   id: "id",
   name: "name",
   createdAt: "createdAt",
-  updatedAt: "updatedAt"
+  updatedAt: "updatedAt",
 };
 var MedicineScalarFieldEnum = {
   id: "id",
@@ -194,7 +199,7 @@ var MedicineScalarFieldEnum = {
   manufacturer: "manufacturer",
   isActive: "isActive",
   createdAt: "createdAt",
-  updatedAt: "updatedAt"
+  updatedAt: "updatedAt",
 };
 var OrderScalarFieldEnum = {
   id: "id",
@@ -204,7 +209,7 @@ var OrderScalarFieldEnum = {
   shipping_address: "shipping_address",
   total_amount: "total_amount",
   createdAt: "createdAt",
-  updatedAt: "updatedAt"
+  updatedAt: "updatedAt",
 };
 var OrderItemScalarFieldEnum = {
   id: "id",
@@ -213,7 +218,7 @@ var OrderItemScalarFieldEnum = {
   sellerId: "sellerId",
   quantity: "quantity",
   unit_price: "unit_price",
-  sub_total: "sub_total"
+  sub_total: "sub_total",
 };
 var ReviewScalarFieldEnum = {
   id: "id",
@@ -221,19 +226,19 @@ var ReviewScalarFieldEnum = {
   customerId: "customerId",
   rating: "rating",
   comment: "comment",
-  createdAt: "createdAt"
+  createdAt: "createdAt",
 };
 var SortOrder = {
   asc: "asc",
-  desc: "desc"
+  desc: "desc",
 };
 var QueryMode = {
   default: "default",
-  insensitive: "insensitive"
+  insensitive: "insensitive",
 };
 var NullsOrder = {
   first: "first",
-  last: "last"
+  last: "last",
 };
 var defineExtension = runtime2.Extensions.defineExtension;
 
@@ -243,10 +248,10 @@ var OrderStatus = {
   PROCESSING: "PROCESSING",
   SHIPPED: "SHIPPED",
   DELIVERED: "DELIVERED",
-  CANCELLED: "CANCELLED"
+  CANCELLED: "CANCELLED",
 };
 var PaymentMethod = {
-  CASH_ON_DELIVERY: "CASH_ON_DELIVERY"
+  CASH_ON_DELIVERY: "CASH_ON_DELIVERY",
 };
 
 // generated/prisma/client.ts
@@ -261,47 +266,47 @@ var prisma = new PrismaClient({ adapter });
 // src/lib/auth.ts
 var auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql"
+    provider: "postgresql",
   }),
   trustedOrigins: [process.env.APP_URL],
   user: {
     additionalFields: {
       role: {
         type: "string",
-        required: false
+        required: false,
       },
       emailVerified: {
         type: "boolean",
         defaultValue: false,
-        required: false
+        required: false,
       },
       status: {
         type: "string",
         defaultValue: "ACTIVE",
-        required: false
+        required: false,
       },
       phone: {
         type: "string",
-        required: false
+        required: false,
       },
       address: {
         type: "string",
-        required: false
-      }
-    }
+        required: false,
+      },
+    },
   },
   emailAndPassword: {
     enabled: true,
-    autoSignIn: false
+    autoSignIn: false,
   },
   socialProviders: {
     google: {
       prompt: "select_account consent",
       accessType: "offline",
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
-    }
-  }
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
+  },
 });
 
 // src/app.ts
@@ -311,7 +316,7 @@ import { toNodeHandler } from "better-auth/node";
 function notFound(req, res) {
   res.status(404).json({
     success: false,
-    message: `${req.originalUrl} - Route not found!`
+    message: `${req.originalUrl} - Route not found!`,
   });
 }
 
@@ -338,7 +343,7 @@ var auth2 = (...roles) => {
   return async (req, res, next) => {
     try {
       const session = await auth.api.getSession({
-        headers: req.headers
+        headers: req.headers,
       });
       if (!session) {
         throw new ApiErrorHandler_default(401, "You are unauthorize!");
@@ -351,12 +356,12 @@ var auth2 = (...roles) => {
         emailVerified: session.user.emailVerified,
         status: session.user.status,
         phone: session.user.phone,
-        address: session.user.address
+        address: session.user.address,
       };
       if (roles.length && !roles.includes(req.user.role)) {
         throw new ApiErrorHandler_default(
           403,
-          "Forbidden! You don't have permission to access!"
+          "Forbidden! You don't have permission to access!",
         );
       }
       next();
@@ -370,7 +375,7 @@ var auth_default = auth2;
 // src/modules/category/category.service.ts
 var createCategory = async (data) => {
   const result = await prisma.category.create({
-    data
+    data,
   });
   return result;
 };
@@ -378,16 +383,16 @@ var getAllCategory = async () => {
   const result = await prisma.category.findMany({
     include: {
       _count: {
-        select: { medicines: true }
-      }
-    }
+        select: { medicines: true },
+      },
+    },
   });
   return result;
 };
 var getCategoryById = async (id) => {
   const result = await prisma.category.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     include: {
       medicines: {
@@ -400,45 +405,45 @@ var getCategoryById = async (id) => {
           seller: {
             select: {
               name: true,
-              email: true
-            }
-          }
-        }
-      }
-    }
+              email: true,
+            },
+          },
+        },
+      },
+    },
   });
   return result;
 };
 var updateCategory = async (id, data) => {
   const category = await prisma.category.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     select: {
-      id: true
-    }
+      id: true,
+    },
   });
   const result = await prisma.category.update({
     where: {
-      id: category.id
+      id: category.id,
     },
-    data
+    data,
   });
   return result;
 };
 var deleteCategory = async (id) => {
   const category = await prisma.category.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     select: {
-      id: true
-    }
+      id: true,
+    },
   });
   return await prisma.category.delete({
     where: {
-      id: category.id
-    }
+      id: category.id,
+    },
   });
 };
 var categoryService = {
@@ -446,7 +451,7 @@ var categoryService = {
   getAllCategory,
   getCategoryById,
   updateCategory,
-  deleteCategory
+  deleteCategory,
 };
 
 // src/helpers/catchAsync.ts
@@ -466,7 +471,7 @@ var sendResponse = (res, data) => {
   res.status(data.statusCode).json({
     success: data.success,
     message: data.message || null,
-    data: data.data || null
+    data: data.data || null,
   });
 };
 var sendResponse_default = sendResponse;
@@ -478,7 +483,7 @@ var createCategory2 = catchAsync_default(async (req, res) => {
     statusCode: 201,
     success: true,
     message: "Category created successfully!",
-    data: result
+    data: result,
   });
 });
 var getAllCategory2 = catchAsync_default(async (req, res) => {
@@ -487,7 +492,7 @@ var getAllCategory2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Category fetch successfully!",
-    data: result
+    data: result,
   });
 });
 var getCategoryById2 = catchAsync_default(async (req, res) => {
@@ -500,7 +505,7 @@ var getCategoryById2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Get Category successfully!",
-    data: result
+    data: result,
   });
 });
 var updateCategory2 = catchAsync_default(async (req, res) => {
@@ -510,7 +515,7 @@ var updateCategory2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Category updated successfully!",
-    data: result
+    data: result,
   });
 });
 var deleteCategory2 = catchAsync_default(async (req, res) => {
@@ -520,7 +525,7 @@ var deleteCategory2 = catchAsync_default(async (req, res) => {
     statusCode: 204,
     success: true,
     message: "Category deleted successfully!",
-    data: result
+    data: result,
   });
 });
 var CategoryController = {
@@ -528,16 +533,28 @@ var CategoryController = {
   getAllCategory: getAllCategory2,
   getCategoryById: getCategoryById2,
   updateCategory: updateCategory2,
-  deleteCategory: deleteCategory2
+  deleteCategory: deleteCategory2,
 };
 
 // src/modules/category/category.router.ts
 var router = express.Router();
 router.get("/", CategoryController.getAllCategory);
 router.get("/:id", CategoryController.getCategoryById);
-router.patch("/:id", auth_default("ADMIN" /* ADMIN */), CategoryController.updateCategory);
-router.delete("/:id", auth_default("ADMIN" /* ADMIN */), CategoryController.deleteCategory);
-router.post("/", auth_default("ADMIN" /* ADMIN */), CategoryController.createCategory);
+router.patch(
+  "/:id",
+  auth_default("ADMIN" /* ADMIN */),
+  CategoryController.updateCategory,
+);
+router.delete(
+  "/:id",
+  auth_default("ADMIN" /* ADMIN */),
+  CategoryController.deleteCategory,
+);
+router.post(
+  "/",
+  auth_default("ADMIN" /* ADMIN */),
+  CategoryController.createCategory,
+);
 var categoryRouter = router;
 
 // src/modules/medicine/medicine.router.ts
@@ -546,7 +563,7 @@ import express2 from "express";
 // src/modules/medicine/medicine.service.ts
 var createMedicine = async (data) => {
   const result = await prisma.medicine.create({
-    data
+    data,
   });
   return result;
 };
@@ -562,7 +579,7 @@ var getAllMedicine = async ({
   limit,
   skip,
   sortBy,
-  sortOrder
+  sortOrder,
 }) => {
   const conditions = [];
   if (search) {
@@ -571,71 +588,71 @@ var getAllMedicine = async ({
         {
           name: {
             contains: search,
-            mode: "insensitive"
-          }
+            mode: "insensitive",
+          },
         },
         {
           manufacturer: {
             contains: search,
-            mode: "insensitive"
-          }
-        }
-      ]
+            mode: "insensitive",
+          },
+        },
+      ],
     });
   }
   if (isActive !== void 0) {
     conditions.push({
-      isActive
+      isActive,
     });
   }
   if (sellerId) {
     conditions.push({
-      sellerId
+      sellerId,
     });
   }
   if (categoryId) {
     conditions.push({
-      categoryId
+      categoryId,
     });
   }
   if (price) {
     conditions.push({
-      price
+      price,
     });
   }
   if (stock) {
     conditions.push({
-      stock
+      stock,
     });
   }
   if (manufacturer) {
     conditions.push({
-      manufacturer
+      manufacturer,
     });
   }
   const allMedicine = await prisma.medicine.findMany({
     take: limit,
     skip,
     where: {
-      AND: conditions
+      AND: conditions,
     },
     include: {
       reviews: {
         select: {
           customerId: true,
           rating: true,
-          comment: true
-        }
-      }
+          comment: true,
+        },
+      },
     },
     orderBy: {
-      [sortBy]: sortOrder
-    }
+      [sortBy]: sortOrder,
+    },
   });
   const total = await prisma.medicine.count({
     where: {
-      AND: conditions
-    }
+      AND: conditions,
+    },
   });
   return {
     data: allMedicine,
@@ -643,8 +660,8 @@ var getAllMedicine = async ({
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit)
-    }
+      totalPages: Math.ceil(total / limit),
+    },
   };
 };
 var getMyMedicines = async ({
@@ -659,7 +676,7 @@ var getMyMedicines = async ({
   limit,
   skip,
   sortBy,
-  sortOrder
+  sortOrder,
 }) => {
   const conditions = [];
   conditions.push({ sellerId });
@@ -667,8 +684,8 @@ var getMyMedicines = async ({
     conditions.push({
       OR: [
         { name: { contains: search, mode: "insensitive" } },
-        { manufacturer: { contains: search, mode: "insensitive" } }
-      ]
+        { manufacturer: { contains: search, mode: "insensitive" } },
+      ],
     });
   }
   if (isActive !== void 0) {
@@ -679,42 +696,42 @@ var getMyMedicines = async ({
   }
   if (price) {
     conditions.push({
-      price
+      price,
     });
   }
   if (stock) {
     conditions.push({
-      stock
+      stock,
     });
   }
   const medicines = await prisma.medicine.findMany({
     take: limit,
     skip,
     where: {
-      AND: conditions
+      AND: conditions,
     },
     include: {
       category: {
         select: {
-          name: true
-        }
+          name: true,
+        },
       },
       reviews: {
         select: {
           customerId: true,
           rating: true,
-          comment: true
-        }
-      }
+          comment: true,
+        },
+      },
     },
     orderBy: {
-      [sortBy]: sortOrder
-    }
+      [sortBy]: sortOrder,
+    },
   });
   const total = await prisma.medicine.count({
     where: {
-      AND: conditions
-    }
+      AND: conditions,
+    },
   });
   return {
     data: medicines,
@@ -722,14 +739,14 @@ var getMyMedicines = async ({
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit)
-    }
+      totalPages: Math.ceil(total / limit),
+    },
   };
 };
 var getMedicineById = async (id) => {
   const result = await prisma.medicine.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     include: {
       seller: {
@@ -737,64 +754,70 @@ var getMedicineById = async (id) => {
           id: true,
           name: true,
           email: true,
-          phone: true
-        }
+          phone: true,
+        },
       },
       category: {
         select: {
           id: true,
-          name: true
-        }
+          name: true,
+        },
       },
       reviews: {
         select: {
           customerId: true,
           rating: true,
-          comment: true
-        }
-      }
-    }
+          comment: true,
+        },
+      },
+    },
   });
   return result;
 };
 var updateMedicine = async (id, data, sellerId) => {
   const medicineData = await prisma.medicine.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     select: {
       id: true,
-      sellerId: true
-    }
+      sellerId: true,
+    },
   });
   if (medicineData.sellerId !== sellerId) {
-    throw new ApiErrorHandler_default(404, "You aren't seller of this medicine!");
+    throw new ApiErrorHandler_default(
+      404,
+      "You aren't seller of this medicine!",
+    );
   }
   const result = await prisma.medicine.update({
     where: {
-      id: medicineData.id
+      id: medicineData.id,
     },
-    data
+    data,
   });
   return result;
 };
 var deleteMedicine = async (id, sellerId) => {
   const medicineData = await prisma.medicine.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     select: {
       id: true,
-      sellerId: true
-    }
+      sellerId: true,
+    },
   });
   if (medicineData.sellerId !== sellerId) {
-    throw new ApiErrorHandler_default(404, "You aren't seller of this medicine!");
+    throw new ApiErrorHandler_default(
+      404,
+      "You aren't seller of this medicine!",
+    );
   }
   return await prisma.medicine.delete({
     where: {
-      id: medicineData.id
-    }
+      id: medicineData.id,
+    },
   });
 };
 var medicineService = {
@@ -803,7 +826,7 @@ var medicineService = {
   getMyMedicines,
   getMedicineById,
   updateMedicine,
-  deleteMedicine
+  deleteMedicine,
 };
 
 // src/helpers/paginationHelper.ts
@@ -834,19 +857,27 @@ var createMedicine2 = catchAsync_default(async (req, res) => {
     statusCode: 201,
     success: true,
     message: "Medicine created successfully!",
-    data: result
+    data: result,
   });
 });
 var getAllMedicine2 = catchAsync_default(async (req, res) => {
   const { search } = req.query;
   const searchContent = typeof search === "string" ? search : void 0;
-  const isActive = req.query.isActive ? req.query.isActive === "true" ? true : req.query.isActive === "false" ? false : void 0 : void 0;
+  const isActive = req.query.isActive
+    ? req.query.isActive === "true"
+      ? true
+      : req.query.isActive === "false"
+        ? false
+        : void 0
+    : void 0;
   const sellerId = req.query.sellerId;
   const categoryId = req.query.categoryId;
   const price = Number(req.query.price);
   const stock = Number(req.query.stock);
   const manufacturer = req.query.manufacturer;
-  const { page, limit, skip, sortBy, sortOrder } = paginationHelper_default(req.query);
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper_default(
+    req.query,
+  );
   const result = await medicineService.getAllMedicine({
     search: searchContent,
     isActive,
@@ -859,13 +890,13 @@ var getAllMedicine2 = catchAsync_default(async (req, res) => {
     limit,
     skip,
     sortBy,
-    sortOrder
+    sortOrder,
   });
   sendResponse_default(res, {
     statusCode: 200,
     success: true,
     message: "Medicine fetch successfully!",
-    data: result
+    data: result,
   });
 });
 var getMyMedicines2 = catchAsync_default(async (req, res) => {
@@ -883,7 +914,9 @@ var getMyMedicines2 = catchAsync_default(async (req, res) => {
   const price = Number(req.query.price);
   const stock = Number(req.query.stock);
   const manufacturer = req.query.manufacturer;
-  const { page, limit, skip, sortBy, sortOrder } = paginationHelper_default(req.query);
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper_default(
+    req.query,
+  );
   const result = await medicineService.getMyMedicines({
     sellerId: user.id,
     search: searchContent,
@@ -896,13 +929,13 @@ var getMyMedicines2 = catchAsync_default(async (req, res) => {
     limit,
     skip,
     sortBy,
-    sortOrder
+    sortOrder,
   });
   sendResponse_default(res, {
     statusCode: 200,
     success: true,
     message: "My medicines fetched successfully!",
-    data: result
+    data: result,
   });
 });
 var getMedicineById2 = catchAsync_default(async (req, res) => {
@@ -915,7 +948,7 @@ var getMedicineById2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Get Medicine successfully!",
-    data: result
+    data: result,
   });
 });
 var updateMedicine2 = catchAsync_default(async (req, res) => {
@@ -924,16 +957,12 @@ var updateMedicine2 = catchAsync_default(async (req, res) => {
     throw new ApiErrorHandler_default(401, "You are unauthorize!");
   }
   const { id } = req.params;
-  const result = await medicineService.updateMedicine(
-    id,
-    req.body,
-    user.id
-  );
+  const result = await medicineService.updateMedicine(id, req.body, user.id);
   sendResponse_default(res, {
     statusCode: 200,
     success: true,
     message: "Medicine updated successfully!",
-    data: result
+    data: result,
   });
 });
 var deleteMedicine2 = catchAsync_default(async (req, res) => {
@@ -947,7 +976,7 @@ var deleteMedicine2 = catchAsync_default(async (req, res) => {
     statusCode: 204,
     success: true,
     message: "Medicine deleted successfully!",
-    data: result
+    data: result,
   });
 });
 var MedicineController = {
@@ -956,7 +985,7 @@ var MedicineController = {
   getMyMedicines: getMyMedicines2,
   getMedicineById: getMedicineById2,
   updateMedicine: updateMedicine2,
-  deleteMedicine: deleteMedicine2
+  deleteMedicine: deleteMedicine2,
 };
 
 // src/modules/medicine/medicine.router.ts
@@ -965,12 +994,24 @@ router2.get("/", MedicineController.getAllMedicine);
 router2.get(
   "/my-medicines",
   auth_default("SELLER" /* SELLER */),
-  MedicineController.getMyMedicines
+  MedicineController.getMyMedicines,
 );
 router2.get("/:id", MedicineController.getMedicineById);
-router2.patch("/:id", auth_default("SELLER" /* SELLER */), MedicineController.updateMedicine);
-router2.delete("/:id", auth_default("SELLER" /* SELLER */), MedicineController.deleteMedicine);
-router2.post("/", auth_default("SELLER" /* SELLER */), MedicineController.createMedicine);
+router2.patch(
+  "/:id",
+  auth_default("SELLER" /* SELLER */),
+  MedicineController.updateMedicine,
+);
+router2.delete(
+  "/:id",
+  auth_default("SELLER" /* SELLER */),
+  MedicineController.deleteMedicine,
+);
+router2.post(
+  "/",
+  auth_default("SELLER" /* SELLER */),
+  MedicineController.createMedicine,
+);
 var medicineRouter = router2;
 
 // src/modules/user/user.router.ts
@@ -984,46 +1025,46 @@ var getAllUser = async () => {
 var updateUserStatus = async (id, data) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     select: {
       id: true,
       emailVerified: true,
-      status: true
-    }
+      status: true,
+    },
   });
   const result = await prisma.user.update({
     where: {
-      id: user.id
+      id: user.id,
     },
     data: {
       emailVerified: user.emailVerified,
-      status
-    }
+      status,
+    },
   });
   return result;
 };
 var updateProfile = async (id, data) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
     select: {
-      id: true
-    }
+      id: true,
+    },
   });
   const result = await prisma.user.update({
     where: {
-      id: user.id
+      id: user.id,
     },
-    data
+    data,
   });
   return result;
 };
 var userService = {
   getAllUser,
   updateUserStatus,
-  updateProfile
+  updateProfile,
 };
 
 // src/modules/user/user.controller.ts
@@ -1040,7 +1081,7 @@ var getAllUser2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Get users successfully!",
-    data: result
+    data: result,
   });
 });
 var updateUserStatus2 = catchAsync_default(async (req, res) => {
@@ -1057,7 +1098,7 @@ var updateUserStatus2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "User updated successfully!",
-    data: result
+    data: result,
   });
 });
 var updateProfile2 = catchAsync_default(async (req, res) => {
@@ -1073,13 +1114,13 @@ var updateProfile2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Profile updated successfully!",
-    data: result
+    data: result,
   });
 });
 var UserController = {
   getAllUser: getAllUser2,
   updateUserStatus: updateUserStatus2,
-  updateProfile: updateProfile2
+  updateProfile: updateProfile2,
 };
 
 // src/modules/user/user.router.ts
@@ -1087,10 +1128,18 @@ var router3 = express3.Router();
 router3.get("/", auth_default("ADMIN" /* ADMIN */), UserController.getAllUser);
 router3.patch(
   "/update-profile",
-  auth_default("CUSTOMER" /* CUSTOMER */, "SELLER" /* SELLER */, "ADMIN" /* ADMIN */),
-  UserController.updateProfile
+  auth_default(
+    "CUSTOMER" /* CUSTOMER */,
+    "SELLER" /* SELLER */,
+    "ADMIN" /* ADMIN */,
+  ),
+  UserController.updateProfile,
 );
-router3.patch("/:id", auth_default("ADMIN" /* ADMIN */), UserController.updateUserStatus);
+router3.patch(
+  "/:id",
+  auth_default("ADMIN" /* ADMIN */),
+  UserController.updateUserStatus,
+);
 var userRouter = router3;
 
 // src/modules/order/order.router.ts
@@ -1106,15 +1155,15 @@ var createOrder = async (userId, payload) => {
         status: OrderStatus.PLACED,
         payment_method: PaymentMethod.CASH_ON_DELIVERY,
         total_amount: Number(total_amount),
-        shipping_address
-      }
+        shipping_address,
+      },
     });
     const orderItemsData = [];
     for (const item of items) {
       const medicine = await tx.medicine.findUnique({
         where: {
-          id: item.medicineId
-        }
+          id: item.medicineId,
+        },
       });
       if (!medicine) {
         throw new ApiErrorHandler_default(404, "Medicine not found!");
@@ -1125,7 +1174,7 @@ var createOrder = async (userId, payload) => {
       if (quantity > availableStock) {
         throw new ApiErrorHandler_default(
           404,
-          `You can't order more than available stock!`
+          `You can't order more than available stock!`,
         );
       }
       orderItemsData.push({
@@ -1134,21 +1183,21 @@ var createOrder = async (userId, payload) => {
         sellerId: item.sellerId,
         quantity,
         unit_price: unitPrice,
-        sub_total: unitPrice * quantity
+        sub_total: unitPrice * quantity,
       });
       await tx.medicine.update({
         where: {
-          id: item.medicineId
+          id: item.medicineId,
         },
         data: {
           stock: {
-            decrement: quantity
-          }
-        }
+            decrement: quantity,
+          },
+        },
       });
     }
     await tx.orderItem.createMany({
-      data: orderItemsData
+      data: orderItemsData,
     });
     return order;
   });
@@ -1156,7 +1205,7 @@ var createOrder = async (userId, payload) => {
 var getMyAllOrder = async (userId) => {
   return await prisma.order.findMany({
     where: {
-      customerId: userId
+      customerId: userId,
     },
     include: {
       items: {
@@ -1170,22 +1219,22 @@ var getMyAllOrder = async (userId) => {
               price: true,
               stock: true,
               manufacturer: true,
-              isActive: true
-            }
-          }
-        }
-      }
+              isActive: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
-      createdAt: "desc"
-    }
+      createdAt: "desc",
+    },
   });
 };
 var getOrderById = async (orderId, userId) => {
   return await prisma.order.findUniqueOrThrow({
     where: {
       id: orderId,
-      customerId: userId
+      customerId: userId,
     },
     include: {
       items: {
@@ -1199,29 +1248,32 @@ var getOrderById = async (orderId, userId) => {
               price: true,
               stock: true,
               manufacturer: true,
-              isActive: true
-            }
-          }
-        }
-      }
-    }
+              isActive: true,
+            },
+          },
+        },
+      },
+    },
   });
 };
 var cancelMyOrder = async (orderId, userId) => {
   return await prisma.$transaction(async (tx) => {
     const orderData = await prisma.order.findUnique({
       where: {
-        id: orderId
+        id: orderId,
       },
       include: {
-        items: true
-      }
+        items: true,
+      },
     });
     if (!orderData) {
       throw new ApiErrorHandler_default(404, "Order not found!");
     }
     if (orderData.customerId !== userId) {
-      throw new ApiErrorHandler_default(404, "You aren't customer of this order!");
+      throw new ApiErrorHandler_default(
+        404,
+        "You aren't customer of this order!",
+      );
     }
     if (orderData.status !== OrderStatus.PLACED) {
       throw new ApiErrorHandler_default(404, "You can't cancel this order!");
@@ -1229,22 +1281,22 @@ var cancelMyOrder = async (orderId, userId) => {
     for (const item of orderData.items) {
       await tx.medicine.update({
         where: {
-          id: item.medicineId
+          id: item.medicineId,
         },
         data: {
           stock: {
-            increment: item.quantity
-          }
-        }
+            increment: item.quantity,
+          },
+        },
       });
     }
     const result = await tx.order.update({
       where: {
-        id: orderId
+        id: orderId,
       },
       data: {
-        status: OrderStatus.CANCELLED
-      }
+        status: OrderStatus.CANCELLED,
+      },
     });
     return result;
   });
@@ -1252,7 +1304,7 @@ var cancelMyOrder = async (orderId, userId) => {
 var getMyMedicinesOrder = async (sellerId) => {
   return await prisma.orderItem.findMany({
     where: {
-      sellerId
+      sellerId,
     },
     include: {
       order: true,
@@ -1263,33 +1315,36 @@ var getMyMedicinesOrder = async (sellerId) => {
           categoryId: true,
           price: true,
           manufacturer: true,
-          isActive: true
-        }
-      }
-    }
+          isActive: true,
+        },
+      },
+    },
   });
 };
 var updateMyMedicinesOrder = async (orderItemId, status2, userId) => {
   const orderItem = await prisma.orderItem.findUniqueOrThrow({
     where: {
-      id: orderItemId
+      id: orderItemId,
     },
     select: {
       id: true,
       orderId: true,
-      sellerId: true
-    }
+      sellerId: true,
+    },
   });
   if (orderItem.sellerId !== userId) {
-    throw new ApiErrorHandler_default(404, "You aren't seller of this medicine order!");
+    throw new ApiErrorHandler_default(
+      404,
+      "You aren't seller of this medicine order!",
+    );
   }
   return await prisma.order.update({
     where: {
-      id: orderItem.orderId
+      id: orderItem.orderId,
     },
     data: {
-      status: status2
-    }
+      status: status2,
+    },
   });
 };
 var getAllOrders = async ({
@@ -1303,35 +1358,35 @@ var getAllOrders = async ({
   limit,
   skip,
   sortBy,
-  sortOrder
+  sortOrder,
 }) => {
   const conditions = [];
   if (status2) {
     conditions.push({
-      status: status2
+      status: status2,
     });
   }
   if (customerId) {
     conditions.push({
-      customerId
+      customerId,
     });
   }
   if (medicineId) {
     conditions.push({
       items: {
         some: {
-          medicineId
-        }
-      }
+          medicineId,
+        },
+      },
     });
   }
   if (sellerId) {
     conditions.push({
       items: {
         some: {
-          sellerId
-        }
-      }
+          sellerId,
+        },
+      },
     });
   }
   if (categoryId) {
@@ -1339,10 +1394,10 @@ var getAllOrders = async ({
       items: {
         some: {
           medicine: {
-            categoryId
-          }
-        }
-      }
+            categoryId,
+          },
+        },
+      },
     });
   }
   if (manufacturer) {
@@ -1352,26 +1407,26 @@ var getAllOrders = async ({
           medicine: {
             manufacturer: {
               contains: manufacturer,
-              mode: "insensitive"
-            }
-          }
-        }
-      }
+              mode: "insensitive",
+            },
+          },
+        },
+      },
     });
   }
   const allOrder = await prisma.order.findMany({
     take: limit,
     skip,
     where: {
-      AND: conditions
+      AND: conditions,
     },
     include: {
       customer: {
         select: {
           name: true,
           email: true,
-          phone: true
-        }
+          phone: true,
+        },
       },
       items: {
         include: {
@@ -1384,20 +1439,20 @@ var getAllOrders = async ({
               price: true,
               stock: true,
               manufacturer: true,
-              isActive: true
-            }
-          }
-        }
-      }
+              isActive: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
-      [sortBy]: sortOrder
-    }
+      [sortBy]: sortOrder,
+    },
   });
   const total = await prisma.order.count({
     where: {
-      AND: conditions
-    }
+      AND: conditions,
+    },
   });
   return {
     data: allOrder,
@@ -1405,8 +1460,8 @@ var getAllOrders = async ({
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit)
-    }
+      totalPages: Math.ceil(total / limit),
+    },
   };
 };
 var orderService = {
@@ -1416,7 +1471,7 @@ var orderService = {
   cancelMyOrder,
   getMyMedicinesOrder,
   updateMyMedicinesOrder,
-  getAllOrders
+  getAllOrders,
 };
 
 // src/modules/order/order.controller.ts
@@ -1433,7 +1488,7 @@ var createOrder2 = catchAsync_default(async (req, res) => {
     statusCode: 201,
     success: true,
     message: "Order placed successfully!",
-    data: result
+    data: result,
   });
 });
 var getMyAllOrder2 = catchAsync_default(async (req, res) => {
@@ -1446,7 +1501,7 @@ var getMyAllOrder2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "My all orders fetched successfully!",
-    data: result
+    data: result,
   });
 });
 var getOrderById2 = catchAsync_default(async (req, res) => {
@@ -1463,7 +1518,7 @@ var getOrderById2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Get order successfully!",
-    data: result
+    data: result,
   });
 });
 var cancelMyOrder2 = catchAsync_default(async (req, res) => {
@@ -1477,7 +1532,7 @@ var cancelMyOrder2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Order cancelled",
-    data: result
+    data: result,
   });
 });
 var getMyMedicinesOrder2 = catchAsync_default(async (req, res) => {
@@ -1490,29 +1545,27 @@ var getMyMedicinesOrder2 = catchAsync_default(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Medicines order get successfully!",
-    data: result
+    data: result,
   });
 });
-var updateMyMedicinesOrder2 = catchAsync_default(
-  async (req, res) => {
-    const { id } = req.params;
-    const user = req.user;
-    if (!user) {
-      throw new ApiErrorHandler_default(401, "You are unauthorize!");
-    }
-    const result = await orderService.updateMyMedicinesOrder(
-      id,
-      req.body.status,
-      user.id
-    );
-    sendResponse_default(res, {
-      statusCode: 200,
-      success: true,
-      message: "Order status updated",
-      data: result
-    });
+var updateMyMedicinesOrder2 = catchAsync_default(async (req, res) => {
+  const { id } = req.params;
+  const user = req.user;
+  if (!user) {
+    throw new ApiErrorHandler_default(401, "You are unauthorize!");
   }
-);
+  const result = await orderService.updateMyMedicinesOrder(
+    id,
+    req.body.status,
+    user.id,
+  );
+  sendResponse_default(res, {
+    statusCode: 200,
+    success: true,
+    message: "Order status updated",
+    data: result,
+  });
+});
 var getAllOrders2 = catchAsync_default(async (req, res) => {
   const status2 = req.query.status;
   const sellerId = req.query.sellerId;
@@ -1520,7 +1573,9 @@ var getAllOrders2 = catchAsync_default(async (req, res) => {
   const medicineId = req.query.medicineId;
   const categoryId = req.query.categoryId;
   const manufacturer = req.query.manufacturer;
-  const { page, limit, skip, sortBy, sortOrder } = paginationHelper_default(req.query);
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper_default(
+    req.query,
+  );
   const result = await orderService.getAllOrders({
     status: status2,
     sellerId,
@@ -1532,13 +1587,13 @@ var getAllOrders2 = catchAsync_default(async (req, res) => {
     limit,
     skip,
     sortBy,
-    sortOrder
+    sortOrder,
   });
   sendResponse_default(res, {
     statusCode: 200,
     success: true,
     message: "Orders fetch successfully!",
-    data: result
+    data: result,
   });
 });
 var OrderController = {
@@ -1548,38 +1603,46 @@ var OrderController = {
   cancelMyOrder: cancelMyOrder2,
   getMyMedicinesOrder: getMyMedicinesOrder2,
   updateMyMedicinesOrder: updateMyMedicinesOrder2,
-  getAllOrders: getAllOrders2
+  getAllOrders: getAllOrders2,
 };
 
 // src/modules/order/order.router.ts
 var router4 = express4.Router();
-router4.post("/", auth_default("CUSTOMER" /* CUSTOMER */), OrderController.createOrder);
+router4.post(
+  "/",
+  auth_default("CUSTOMER" /* CUSTOMER */),
+  OrderController.createOrder,
+);
 router4.get(
   "/my-orders",
   auth_default("CUSTOMER" /* CUSTOMER */),
-  OrderController.getMyAllOrder
+  OrderController.getMyAllOrder,
 );
 router4.get(
   "/my-orders/:id",
   auth_default("CUSTOMER" /* CUSTOMER */),
-  OrderController.getOrderById
+  OrderController.getOrderById,
 );
 router4.patch(
   "/my-orders/cancel/:id",
   auth_default("CUSTOMER" /* CUSTOMER */),
-  OrderController.cancelMyOrder
+  OrderController.cancelMyOrder,
 );
 router4.get(
   "/seller/my-medicine-orders",
   auth_default("SELLER" /* SELLER */),
-  OrderController.getMyMedicinesOrder
+  OrderController.getMyMedicinesOrder,
 );
 router4.patch(
   "/seller/update-my-medicine-orders/:id",
   auth_default("SELLER" /* SELLER */),
-  OrderController.updateMyMedicinesOrder
+  OrderController.updateMyMedicinesOrder,
 );
-router4.get("/admin/orders", auth_default("ADMIN" /* ADMIN */), OrderController.getAllOrders);
+router4.get(
+  "/admin/orders",
+  auth_default("ADMIN" /* ADMIN */),
+  OrderController.getAllOrders,
+);
 var orderRouter = router4;
 
 // src/modules/review/review.router.ts
@@ -1594,15 +1657,15 @@ var createReview = async (userId, payload) => {
       status: OrderStatus.DELIVERED,
       items: {
         some: {
-          medicineId
-        }
-      }
-    }
+          medicineId,
+        },
+      },
+    },
   });
   if (!hasOrdered) {
     throw new ApiErrorHandler_default(
       403,
-      "You can only review medicine that you have successfully purchased!"
+      "You can only review medicine that you have successfully purchased!",
     );
   }
   const result = await prisma.review.create({
@@ -1610,13 +1673,13 @@ var createReview = async (userId, payload) => {
       medicineId,
       customerId: userId,
       rating: Number(rating),
-      comment
-    }
+      comment,
+    },
   });
   return result;
 };
 var reviewService = {
-  createReview
+  createReview,
 };
 
 // src/modules/review/review.controller.ts
@@ -1633,16 +1696,20 @@ var createReview2 = catchAsync_default(async (req, res) => {
     statusCode: 201,
     success: true,
     message: "Review added successfully!",
-    data: result
+    data: result,
   });
 });
 var ReviewController = {
-  createReview: createReview2
+  createReview: createReview2,
 };
 
 // src/modules/review/review.router.ts
 var router5 = express5.Router();
-router5.post("/", auth_default("CUSTOMER" /* CUSTOMER */), ReviewController.createReview);
+router5.post(
+  "/",
+  auth_default("CUSTOMER" /* CUSTOMER */),
+  ReviewController.createReview,
+);
 var reviewRouter = router5;
 
 // src/middleware/globalErrorHandler.ts
@@ -1653,7 +1720,9 @@ var globalErrorHandler = (err, req, res, next) => {
   if (err instanceof prismaNamespace_exports.PrismaClientValidationError) {
     statusCode = 400;
     message = "Validation error: Check your input fields!";
-  } else if (err instanceof prismaNamespace_exports.PrismaClientKnownRequestError) {
+  } else if (
+    err instanceof prismaNamespace_exports.PrismaClientKnownRequestError
+  ) {
     if (err.code === "P2002") {
       statusCode = 409;
       message = "Duplicate entry found!";
@@ -1664,15 +1733,18 @@ var globalErrorHandler = (err, req, res, next) => {
       statusCode = 404;
       message = "Record not found!";
     }
-  } else if (err instanceof prismaNamespace_exports.PrismaClientInitializationError) {
+  } else if (
+    err instanceof prismaNamespace_exports.PrismaClientInitializationError
+  ) {
     statusCode = 500;
     message = "DB connection fail!";
   }
   res.status(statusCode).json({
     success: false,
     message,
-    errorDetails: process.env.NODE_ENV === "development" ? errorDetails : void 0,
-    stack: process.env.NODE_ENV === "development" ? err.stack : void 0
+    errorDetails:
+      process.env.NODE_ENV === "development" ? errorDetails : void 0,
+    stack: process.env.NODE_ENV === "development" ? err.stack : void 0,
   });
 };
 var globalErrorHandler_default = globalErrorHandler;
@@ -1682,8 +1754,8 @@ var app = express6();
 app.use(
   cors({
     origin: process.env.APP_URL || "http://localhost:3000",
-    credentials: true
-  })
+    credentials: true,
+  }),
 );
 app.use(express6.json());
 app.all("/api/auth/*splat", toNodeHandler(auth));
