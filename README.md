@@ -1,4 +1,4 @@
-# [MNA-MediStore Backend](mna-medistore-backend)
+# [MNA-MediStore Backend](https://mna-medistore-backend.vercel.app/)
 
 ## MNA-MediStore Frontend - [Repo Link:](https://github.com/nurulazam-dev/mna-medistore-frontend)
 
@@ -30,6 +30,17 @@ npm run dev
 | getMyMedicinesOrder    | seller   | "/seller/my-medicine-orders"            | seller get his all Medicines orders                         |
 | updateMyMedicinesOrder | seller   | "/seller/update-my-medicine-orders/:id" | seller patch his Medicine order(update => status)           |
 | getAllOrders           | admin    | "/admin/orders"                         | admin get all orders                                        |
+
+### Verified Login Credentials
+
+| Item              |       Credential       |
+| ----------------- | :--------------------: |
+| Admin Email       |  admin@medistore.com   |
+| Admin Password    |        Admin123        |
+| Seller Email      |  seller@medistore.com  |
+| Seller Password   |       Seller123        |
+| Customer Email    | customer@medistore.com |
+| Customer Password |      Customer123       |
 
 ### Deployment
 
