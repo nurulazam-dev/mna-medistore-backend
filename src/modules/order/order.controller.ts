@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import { orderService } from "./order.service";
-import { OrderStatus } from "../../../generated/prisma/enums";
+// import { OrderStatus } from "../../../generated/prisma/enums";
 import paginationHelper from "../../helpers/paginationHelper";
 import ApiErrorHandler from "../../helpers/ApiErrorHandler";
 import catchAsync from "../../helpers/catchAsync";
 import sendResponse from "../../helpers/sendResponse";
+import { OrderStatus } from "@prisma/client";
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
