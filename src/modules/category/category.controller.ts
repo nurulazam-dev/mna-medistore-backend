@@ -5,6 +5,16 @@ import catchAsync from "../../helpers/catchAsync";
 import sendResponse from "../../helpers/sendResponse";
 
 const createCategory = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  if (!user) {
+    throw new ApiErrorHandler(401, "You are unauthorize!");
+  }
+
+  if (user.status !== "ACTIVE") {
+    throw new ApiErrorHandler(403, "Your account isn't active!");
+  }
+
   const result = await categoryService.createCategory(req.body);
 
   sendResponse(res, {
@@ -43,7 +53,16 @@ const getCategoryById = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateCategory = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
   const { id } = req.params;
+
+  if (!user) {
+    throw new ApiErrorHandler(401, "You are unauthorize!");
+  }
+
+  if (user.status !== "ACTIVE") {
+    throw new ApiErrorHandler(403, "Your account isn't active!");
+  }
 
   const result = await categoryService.updateCategory(id as string, req.body);
 
@@ -56,7 +75,16 @@ const updateCategory = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteCategory = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
   const { id } = req.params;
+
+  if (!user) {
+    throw new ApiErrorHandler(401, "You are unauthorize!");
+  }
+
+  if (user.status !== "ACTIVE") {
+    throw new ApiErrorHandler(403, "Your account isn't active!");
+  }
 
   const result = await categoryService.deleteCategory(id as string);
 

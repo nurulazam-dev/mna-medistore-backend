@@ -180,7 +180,20 @@ const getMyMedicinesOrder = async (sellerId: string) => {
       sellerId,
     },
     include: {
-      order: true,
+      order: {
+        include: {
+          customer: {
+            select: {
+              name: true,
+              email: true,
+              emailVerified: true,
+              phone: true,
+              address: true,
+              status: true,
+            },
+          },
+        },
+      },
       medicine: {
         select: {
           name: true,
@@ -194,6 +207,79 @@ const getMyMedicinesOrder = async (sellerId: string) => {
     },
   });
 };
+
+/* const getMyMedicinesOrder = async ({
+  sellerId,
+  page,
+  limit,
+  skip,
+  sortBy,
+  sortOrder,
+}: {
+  sellerId: string;
+  page: number;
+  limit: number;
+  skip: number;
+  sortBy: string;
+  sortOrder: string;
+}) => {
+  const allOrders = await prisma.orderItem.findMany({
+    take: limit,
+    skip,
+    where: {
+      medicine: {
+        sellerId: sellerId,
+      },
+    },
+    include: {
+      order: {
+        include: {
+          customer: {
+            select: {
+              name: true,
+              email: true,
+              emailVerified: true,
+              phone: true,
+              address: true,
+              status: true,
+            },
+          },
+        },
+      },
+      medicine: {
+        select: {
+          name: true,
+          image: true,
+          categoryId: true,
+          price: true,
+          manufacturer: true,
+          isActive: true,
+        },
+      },
+    },
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
+  });
+
+  const total = await prisma.orderItem.count({
+    where: {
+      medicine: {
+        sellerId: sellerId,
+      },
+    },
+  });
+
+  return {
+    data: allOrders,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+}; */
 
 const updateMyMedicinesOrder = async (
   orderItemId: string,

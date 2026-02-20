@@ -290,6 +290,22 @@ const updateMedicine = async (
   return result;
 };
 
+const adminUpdateMedicine = async (id: string, data: Partial<Medicine>) => {
+  const medicineData = await prisma.medicine.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const result = await prisma.medicine.update({
+    where: {
+      id: medicineData.id,
+    },
+    data,
+  });
+  return result;
+};
+
 const deleteMedicine = async (id: string, sellerId: string) => {
   const medicineData = await prisma.medicine.findUniqueOrThrow({
     where: {
@@ -319,4 +335,5 @@ export const medicineService = {
   getMedicineById,
   updateMedicine,
   deleteMedicine,
+  adminUpdateMedicine,
 };
