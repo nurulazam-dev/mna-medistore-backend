@@ -14,14 +14,14 @@ const app: Application = express();
 
 app.use(
   cors({
-    origin: process.env.APP_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_APP_URL,
     credentials: true,
   }),
 );
 
-app.use(express.json());
-
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.use(express.json());
 
 app.use("/users", userRouter);
 app.use("/categories", categoryRouter);
@@ -30,7 +30,7 @@ app.use("/orders", orderRouter);
 app.use("/reviews", reviewRouter);
 
 app.get("/", (req, res) => {
-  res.send("Running the MNA_MediStore_Server");
+  res.send("MNA_Medicine_Store Server");
 });
 
 app.use(notFound);

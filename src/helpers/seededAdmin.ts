@@ -8,6 +8,7 @@ async function seededAdmin() {
       email: "admin@medistore.com",
       password: "Admin123",
       role: UserRole.ADMIN,
+      emailVerified: true,
       phone: "+8801721233215",
       status: "ACTIVE",
       address: "Dhaka",
@@ -24,12 +25,12 @@ async function seededAdmin() {
     }
 
     const signUpAdmin = await fetch(
-      "http://localhost:5000/api/auth/sign-up/email",
+      "https://mna-medistore-backend.vercel.app/api/auth/sign-up/email",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          origin: "http://localhost:5000",
+          origin: "https://mna-medistore-backend.vercel.app",
         },
         body: JSON.stringify(adminData),
       },

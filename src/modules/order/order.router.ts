@@ -26,6 +26,7 @@ router.get(
   auth(UserRole.SELLER),
   OrderController.getMyMedicinesOrder,
 );
+
 router.patch(
   "/seller/update-my-medicine-orders/:id",
   auth(UserRole.SELLER),

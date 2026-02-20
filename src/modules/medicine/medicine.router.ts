@@ -12,6 +12,11 @@ router.get(
 );
 router.get("/:id", MedicineController.getMedicineById);
 router.patch("/:id", auth(UserRole.SELLER), MedicineController.updateMedicine);
+router.patch(
+  "/admin/:id",
+  auth(UserRole.ADMIN),
+  MedicineController.adminUpdateMedicine,
+);
 router.delete("/:id", auth(UserRole.SELLER), MedicineController.deleteMedicine);
 router.post("/", auth(UserRole.SELLER), MedicineController.createMedicine);
 
