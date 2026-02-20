@@ -14,6 +14,10 @@ The core engine of MNA-MediStore, providing a secure RESTful API for managing ph
 
 ---
 
+### Database Schema Diagram Design
+
+## ![preview img](./mna-medistore-db-design.png)
+
 ## 🛠️ Tech Stack
 
 ### Backend Architecture
