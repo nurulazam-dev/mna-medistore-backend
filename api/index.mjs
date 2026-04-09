@@ -263,7 +263,7 @@ var auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql"
   }),
-  trustedOrigins: [process.env.FRONTEND_APP_URL],
+  trustedOrigins: [process.env.FRONTEND_APP_URL, process.env.BETTER_AUTH_URL],
   user: {
     additionalFields: {
       role: {
@@ -319,8 +319,6 @@ var auth = betterAuth({
       accessType: "offline",
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
-      // redirectURI: process.env.FRONTEND_APP_URL,
-      // redirectURI: `${process.env.FRONTEND_APP_URL}/api/auth/callback/google`,
     }
   }
 });

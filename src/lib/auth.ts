@@ -7,7 +7,7 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
 
-  trustedOrigins: [process.env.FRONTEND_APP_URL!],
+  trustedOrigins: [process.env.FRONTEND_APP_URL!, process.env.BETTER_AUTH_URL!],
 
   user: {
     additionalFields: {
@@ -68,8 +68,6 @@ export const auth = betterAuth({
       accessType: "offline",
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      // redirectURI: process.env.FRONTEND_APP_URL,
-      // redirectURI: `${process.env.FRONTEND_APP_URL}/api/auth/callback/google`,
     },
   },
 });
