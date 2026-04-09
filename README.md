@@ -14,6 +14,16 @@ The core engine of MNA-MediStore, providing a secure RESTful API for managing ph
 
 ---
 
+## 🔑 Verified Login Credentials (Testing)
+
+| Role         | Email                    | Password      |
+| :----------- | :----------------------- | :------------ |
+| **Admin**    | `admin@medistore.com`    | `Admin123`    |
+| **Seller**   | `seller@medistore.com`   | `Seller123`   |
+| **Customer** | `customer@medistore.com` | `Customer123` |
+
+---
+
 ### Database Schema Diagram Design
 
 ## ![preview img](./mna-medistore-db-design.png)
@@ -32,16 +42,6 @@ The core engine of MNA-MediStore, providing a secure RESTful API for managing ph
 | **TypeScript**  | Static typing to ensure code reliability and catch errors during development. |
 | **CORS**        | Middleware to enable secure cross-origin resource sharing with the frontend.  |
 | **Dotenv**      | Zero-dependency module that loads environment variables from a `.env` file.   |
-
----
-
-## 🔑 Verified Login Credentials (Testing)
-
-| Role         | Email                    | Password      |
-| :----------- | :----------------------- | :------------ |
-| **Admin**    | `admin@medistore.com`    | `Admin123`    |
-| **Seller**   | `seller@medistore.com`   | `Seller123`   |
-| **Customer** | `customer@medistore.com` | `Customer123` |
 
 ---
 
