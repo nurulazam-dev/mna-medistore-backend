@@ -9,6 +9,7 @@ import { userRouter } from "./modules/user/user.router";
 import { orderRouter } from "./modules/order/order.router";
 import { reviewRouter } from "./modules/review/review.router";
 import globalErrorHandler from "./middleware/globalErrorHandler";
+import { AIRoutes } from "./modules/aiChatBot/chatbot.router";
 
 const app: Application = express();
 
@@ -28,6 +29,7 @@ app.use("/categories", categoryRouter);
 app.use("/medicines", medicineRouter);
 app.use("/orders", orderRouter);
 app.use("/reviews", reviewRouter);
+app.use("/ai", AIRoutes);
 
 app.get("/", (req, res) => {
   res.send("MNA_Medicine_Store Server");

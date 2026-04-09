@@ -5,7 +5,7 @@ var __export = (target, all) => {
 };
 
 // src/app.ts
-import express6 from "express";
+import express7 from "express";
 import cors from "cors";
 
 // src/lib/auth.ts
@@ -1918,8 +1918,70 @@ var globalErrorHandler = (err, req, res, next) => {
 };
 var globalErrorHandler_default = globalErrorHandler;
 
+// src/modules/aiChatBot/chatbot.router.ts
+import express6 from "express";
+
+// src/modules/aiChatBot/chatbot.service.ts
+import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+dotenv.config();
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error("GEMINI_API_KEY is missing in .env file");
+}
+var genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+var getHealthAdviceFromAI = async (userMessage) => {
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  try {
+    const prompt = `
+    You are a professional medical assistant for "MNA MediStore", an online pharmacy store.
+    
+    Guidelines:
+    1. Answer only health and medicine related questions. 
+    2. If someone asks about IT, programming, or anything unrelated to healthcare, politely say: "I am specialized in healthcare. Please ask me about medicines or health tips."
+    3. Always include this disclaimer at the end in a new line: "\u26A0\uFE0F Disclaimer: This is for informational purposes. Please consult a doctor before taking any medicine."
+    4. Provide brief and clear answers.
+    5. Support both English and Bengali.
+
+    User Question: ${userMessage}
+  `;
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    if (!text) throw new Error("Empty response from AI");
+    return text;
+  } catch (error) {
+    console.error("Detailed Gemini Error:", error.status, error.message);
+    throw new Error(`AI Error: ${error.message}`);
+  }
+};
+
+// src/modules/aiChatBot/chatbot.controller.ts
+var ChatWithAIController = async (req, res) => {
+  try {
+    const { message } = req.body;
+    if (!message) {
+      return res.status(400).json({ success: false, message: "Message is required" });
+    }
+    const aiAnswer = await getHealthAdviceFromAI(message);
+    res.status(200).json({
+      success: true,
+      data: aiAnswer
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong with AI"
+    });
+  }
+};
+
+// src/modules/aiChatBot/chatbot.router.ts
+var router6 = express6.Router();
+router6.post("/chat", ChatWithAIController);
+var AIRoutes = router6;
+
 // src/app.ts
-var app = express6();
+var app = express7();
 app.use(
   cors({
     origin: process.env.FRONTEND_APP_URL,
@@ -1927,12 +1989,13 @@ app.use(
   })
 );
 app.all("/api/auth/*splat", toNodeHandler(auth));
-app.use(express6.json());
+app.use(express7.json());
 app.use("/users", userRouter);
 app.use("/categories", categoryRouter);
 app.use("/medicines", medicineRouter);
 app.use("/orders", orderRouter);
 app.use("/reviews", reviewRouter);
+app.use("/ai", AIRoutes);
 app.get("/", (req, res) => {
   res.send("MNA_Medicine_Store Server");
 });
